@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Homepage</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFF4DC;
+            text-align: center;
+            color: #917F74;
+        }
+
+        #installButton {
+            display: none;
+            padding: 10px 20px;
+            background-color: #AD512E;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        #installButton:hover {
+            background-color: #8e3e23;
+        }
+
+        .quote {
+            padding: 20px;
+            background-color: #FFFAF2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+        }
+
+        .quote .quote-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            text-align: left;
+        }
+
+        .quote .quote-image {
+            width: 150%;
+            max-width: 500px;
+            height: auto;
+            margin-right: 50px;
+            transition: transform 0.3s ease;
+            border-radius: 20px;
+        }
+
+        .quote .quote-text {
+            position: relative;
+            font-size: 18px;
+            line-height: 1.5;
+            color: #333;
+            text-align: left;
+        }
+
+        .quote .quote-text p {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 30px;
+            line-height: 1.5;
+            margin: 0;
+            color: #917F74;
+        }
+
+        .quote .quote-text p::before,
+        .quote .quote-text p::after {
+            content: '"';
+            font-size: 96px;
+            color: #AD512E;
+            position: absolute;
+        }
+
+        .quote .quote-text p::before {
+            top: -30px;
+            left: -40px;
+        }
+
+        .quote .quote-text p::after {
+            bottom: -30px;
+            right: -40px;
+        }
+
+        .quote .quote-button-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .quote .quote-text button {
+            padding: 10px 20px;
+            background-color: #AD512E;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .quote .quote-container {
+                flex-direction: column;
+            }
+
+            .quote .quote-image {
+                max-width: 400px;
+                margin-bottom: 20px;
+                margin-left: 50px;
+            }
+
+            .quote .quote-text p {
+                font-size: 24px;
+            }
+
+            .quote .quote-text p::before,
+            .quote .quote-text p::after {
+                font-size: 48px;
+            }
+
+            .quote .quote-text p::before {
+                top: -15px;
+                left: -20px;
+            }
+
+            .quote .quote-text p::after {
+                bottom: -15px;
+                right: -20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quote .quote-container {
+                flex-direction: column;
+            }
+
+            .quote .quote-image {
+                margin-bottom: 20px;
+                max-width: 150px;
+            }
+
+            .quote .quote-text p {
+                font-size: 18px;
+            }
+
+            .quote .quote-text p::before,
+            .quote .quote-text p::after {
+                font-size: 36px;
+                top: -10px;
+                left: -10px;
+                bottom: -10px;
+                right: -15px;
+            }
+        }
+
+        .book-details-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .book-details-modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .book-details-modal-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .book-details-modal-close:hover,
+        .book-details-modal-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: none;
+            background-color: #AD512E;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        header {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-top {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .header-top.logo img {
+            height: 40px;
+        }
+
+        .header-top.search-bar {
+            height: 20px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .header-top.search-bar input {
+            height: 40px;
+            width: 150px;
+            font-size: 14px;
+            padding: 5px;
+            border: none;
+        }
+
+        .header-top.search-bar button {
+            height: 50px;
+            width: 30px;
+            font-size: 14px;
+            background-color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .header-top.search-bar button::before {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            content: "\f002";
+            font-size: 16px;
+            color: #666;
+        }
+
+        .header-top.header-icons i {
+            font-size: 20px;
+        }
+
+        .logo img {
+            width: 100px;
+            height: auto;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .search-bar button {
+            background-color: #AD512E;
+            color: #fff;
+            font-size: 12px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-icons i {
+            color: #666;
+        }
+
+        .header-icons img {
+            width: 30px;
+            height: auto;
+            margin-left: 10px;
+        }
+
+        .filter-btn {
+            background-color: #AD512E;
+            color: #fff;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            display: block;
+            color: #333;
+            font-size: 16px;
+            text-decoration: none;
+            padding: 10px 0;
+        }
+
+        nav ul li a:hover {
+            color: #8e5a36;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-icons i {
+            font-size: 30px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        main .welcome {
+            margin-bottom: 40px;
+        }
+
+        main .welcome h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        main .welcome .intro {
+            display: center;
+            align-items: center;
+            justify-content: center;
+        }
+
+        main .welcome .intro .intro-text p {
+            margin-bottom: 20px;
+        }
+
+        main .welcome .intro .intro-text button {
+            padding: 10px 20px;
+            background-color: #AD512E;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        main .featured,
+        main .best-selling,
+        main .top-authors,
+        main .quote {
+            margin-bottom: 40px;
+        }
+
+        main h2 {
+            display: inline-block;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        main button {
+            float: right;
+            padding: 5px 10px;
+            background-color: #AD512E;
+            color: white;
+        }
+
+        .top-authors .authors .author img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 10px;
+        }
+
+        body {
+            color: #917F74;
+        }
+
+        button {
+            color: #fff;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .see-all-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #AD512E;
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .see-all-button i {
+            margin-left: 10px;
+        }
+
+        main button {
+            padding: 5px 10px;
+            background-color: #AD512E;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        main button i {
+            margin-left: 10px;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .header-icons a {
+            color: #666;
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        .header-icons i {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .best-selling .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 20px 0;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .best-selling .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .best-selling .books-carousel {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow: visible;
+            gap: 10px;
+        }
+
+        .best-selling .books-carousel img {
+            width: 150px;
+            height: 225px;
+            object-fit: cover;
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .best-selling .books-carousel img:hover {
+            transform: scale(1.1);
+        }
+
+        footer {
+            background-color: #AD512E;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer .footer-sections {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        footer .footer-sections div {
+            margin: 20px;
+        }
+
+        footer .footer-sections h3 {
+            margin-bottom: 10px;
+        }
+
+        footer .footer-sections ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        footer .footer-sections ul li {
+            margin-bottom: 5px;
+        }
+
+        footer .footer-bottom {
+            margin-top: 20px;
+            border-top: 1px solid white;
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer .footer-bottom img {
+            width: 200px;
+        }
+
+        .welcome .intro {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .scroller-container {
+            flex: 1;
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            white-space: nowrap;
+            padding: 0;
+            margin-right: 20px;
+        }
+
+        .scroller-item img {
+            width: 150px;
+            height: auto;
+            border-radius: 12px;
+            margin: 0 5px;
+            box-shadow: none;
+            transition: transform 0.3s ease;
+        }
+
+        .scroller-item img:hover {
+            transform: scale(1.1);
+        }
+
+        .intro-text {
+            flex: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @media (max-width: 480px) {
+            .welcome .intro {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .scroller-container {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .intro-text {
+                width: 100%;
+                order: 2;
+            }
+
+            .scroller-item img {
+                width: 100px;
+            }
+
+            .featured .books {
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+
+            .featured .book {
+                flex-basis: 33.33%;
+                max-width: 33.33%;
+                box-sizing: border-box;
+            }
+
+            .featured .book img {
+                width: 100%;
+                height: auto;
+            }
+
+            .featured {
+                padding: 10px;
+                background: none;
+                animation: none;
+            }
+
+            .featured .books {
+                flex-direction: column;
+            }
+
+            .featured .book {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .featured .book img {
+                width: auto;
+                max-height: 200px;
+            }
+
+            .featured h2,
+            .featured button {
+                text-align: center;
+            }
+
+            .featured button {
+                padding: 8px 16px;
+            }
+
+            .featured .book {
+                flex-basis: 100%;
+                max-width: 100%;
+                margin: 10px 0;
+            }
+        }
+
+        .featured .book {
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .featured .book:nth-child(3) img {
+            height: 310px;
+        }
+
+        .featured .book img {
+            width: 100%;
+            height: auto;
+            max-width: 200px;
+            border-radius: 10px;
+        }
+
+        .featured .books,
+        .top-authors .authors {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .featured .book,
+        .top-authors .author {
+            margin: 20px;
+            flex-basis: 20%;
+        }
+
+        @media (max-width: 768px) {
+            .featured .book,
+            .top-authors .author {
+                flex-basis: 30%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .featured .book,
+            .top-authors .author {
+                flex-basis: 50%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .featured .book,
+            .top-authors .author {
+                flex-basis: 50%;
+            }
+        }
+
+        .welcome,
+        .featured,
+        .best-selling,
+        .top-authors,
+        .quote {
+            padding: 20px;
+            background-color: #FFFAF2;
+        }
+
+        .featured .book img:hover {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        .featured {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fad0c4, #ff9a9e);
+            background-size: 600% 600%;
+            animation: gradientAnimation 15s ease infinite;
+            padding: 20px;
+        }
+
+        .featured h2,
+        .featured button,
+        .featured .books {
+            position: relative;
+            z-index: 1;
+        }
+
+        .featured::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 0;
+        }
+
+        .featured .book {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .featured {
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            transition: background-image 1s ease-in-out;
+        }
+
+        .featured h2,
+        .featured button,
+        .featured .books {
+            position: relative;
+            z-index: 1;
+        }
+
+        .featured::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 0;
+        }
+
+        .featured .book {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="logo">
+                <img src="images/logo.png" alt="NOVEL NOOK">
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="header-icons">
+                <button class="filter-btn">Filter</button>
+                <div class="header-icons">
+                    <a href="#" id="userIcon"><i class="fas fa-user"></i></a>
+                    <a href="Mycart.html"><i class="fas fa-shopping-cart"></i></a>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Events</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Others</a></li>
+                <li><a href="Favorites.html"><i class="fa fa-heart"></i> Favorites</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Welcome to our library website!</h1>
+        <button id="installButton" style="display: none;">Install App</button>
+
+        <section class="welcome">
+            <section class="scroller">
+                <div class="intro">
+                    <div class="scroller-container">
+                        <div class="scroller-item"><img src="images/book1.jpeg" alt="Image 1"></div>
+                        <div class="scroller-item"><img src="images/book2.jpeg" alt="Image 2"></div>
+                        <div class="scroller-item"><img src="images/book3.jpeg" alt="Image 3"></div>
+                        <div class="scroller-item"><img src="images/book4.jpeg" alt="Image 4"></div>
+                        <div class="scroller-item"><img src="images/book5.jpeg" alt="Image 5"></div>
+                        <div class="scroller-item"><img src="images/book6.jpeg" alt="Image 6"></div>
+                        <div class="scroller-item"><img src="images/book7.jpeg" alt="Image 7"></div>
+                        <div class="scroller-item"><img src="images/book8.jpeg" alt="Image 8"></div>
+                    </div>
+                    <div class="intro-text">
+                        <p>Discover worlds of knowledge and adventure right at your fingertips</p>
+                        <h6>"A room without books is like a body without a soul."</h6>
+                        <button>Learn More!</button>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <section class="featured">
+            <h2>Featured</h2>
+            <button class="see-all-button">See all <i class="fa fa-arrow-right"></i></button>
+            <div class="books">
+                <div class="book" data-name="Romance">
+                    <img src="images/romance.png" alt="Book 1">
+                    <p>Romance</p>
+                </div>
+                <div class="book" data-name="Mystery">
+                    <img src="images/mystery.png" alt="Book 2">
+                    <p>Mystery</p>
+                </div>
+                <div class="book" data-name="Science" id="scienceBook">
+                    <img src="images/science.png" alt="Science Book">
+                    <p>Science</p>
+                </div>
+            </div>
+        </section>
+
+        <div id="bookDetailsModal" class="book-details-modal">
+            <div class="book-details-modal-content">
+                <span class="book-details-modal-close">&times;</span>
+                <h2>Book Title</h2>
+                <p>Author: Book Author</p>
+                <p>Description: This is a detailed description of the book.</p>
+            </div>
+        </div>
+
+        <div id="backToTop" class="back-to-top">
+            <i class="fa fa-arrow-up"></i>
+        </div>
+
+        <section class="best-selling">
+            <h2>Best Selling</h2>
+            <button class="see-all-button">See all <i class="fa fa-arrow-right"></i></button>
+            <div class="scroll-container">
+                <div class="books-carousel">
+                    <img src="images/book1.jpeg" alt="Bestseller 1">
+                    <img src="images/book2.jpeg" alt="Bestseller 2">
+                    <img src="images/book3.jpeg" alt="Bestseller 3">
+                    <img src="images/book4.jpeg" alt="Bestseller 4">
+                    <img src="images/book5.jpeg" alt="Bestseller 5">
+                    <img src="images/book6.jpeg" alt="Bestseller 6">
+                    <img src="images/book7.jpeg" alt="Bestseller 7">
+                    <img src="images/book8.jpeg" alt="Bestseller 8">
+                </div>
+            </div>
+        </section>
+
+        <section class="top-authors">
+            <h2>Top Authors</h2>
+            <button class="see-all-button">See all <i class="fa fa-arrow-right"></i></button>
+            <div class="authors">
+                <div class="author">
+                    <img src="images/author1.png" alt="Author 1">
+                    <p>Kristin Hannah</p>
+                </div>
+                <div class="author">
+                    <img src="images/author2.png" alt="Author 2">
+                    <p>Emily Henry</p>
+                </div>
+                <div class="author">
+                    <img src="images/author3.png" alt="Author 3">
+                    <p>Alex Michaelides</p>
+                </div>
+                <div class="author">
+                    <img src="images/author4.png" alt="Author 4">
+                    <p>Freida McFadden</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="quote">
+            <div class="quote-container">
+                <img src="images/quote.png" alt="Quote Book" class="quote-image">
+                <div class="quote-text">
+                    <p>Reading is to the mind what exercise is to the body</p>
+                    <div class="quote-button-container">
+                        <button onclick="window.location.href='Signup.html'">Sign Up Now!</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-sections">
+            <div class="support">
+                <h3>Support</h3>
+                <ul>
+                    <li>Help Center</li>
+                    <li>Shipping Information</li>
+                    <li>Cancellation Options</li>
+                </ul>
+            </div>
+            <div class="company">
+                <h3>Company</h3>
+                <ul>
+                    <li>About us</li>
+                    <li>Privacy Policy</li>
+                    <li>Terms of Service</li>
+                </ul>
+            </div>
+            <div class="contact">
+                <h3>Contact</h3>
+                <ul>
+                    <li>FAQ</li>
+                    <li>Get in touch</li>
+                    <li>Partnerships</li>
+                </ul>
+            </div>
+            <div class="social">
+                <h3>Social</h3>
+                <ul>
+                    <li>Facebook</li>
+                    <li>Twitter</li>
+                    <li>Instagram</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-paypal"></i>
+            </div>
+            <p>&copy; 2024 Library. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.book').forEach(book => {
+            book.addEventListener('click', () => {
+                document.getElementById('bookDetailsModal').style.display = 'block';
+            });
+        });
+
+        document.querySelector('.book-details-modal-close').addEventListener('click', () => {
+            document.getElementById('bookDetailsModal').style.display = 'none';
+        });
+
+        window.onclick = (event) => {
+            if (event.target == document.getElementById('bookDetailsModal')) {
+                document.getElementById('bookDetailsModal').style.display = 'none';
+            }
+        };
+
+        window.onscroll = () => {
+            const backToTopButton = document.querySelector('.back-to-top');
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        };
+
+        const scrollToTop = () => {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        };
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userIcon = document.getElementById('userIcon');
+            if (userIcon) {
+                userIcon.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    if (user && (user.role === 'student' || user.role === 'nonstudent')) {
+                        window.location.href = 'userprofile.html';
+                    } else {
+                        window.location.href = 'Signup.html';
+                    }
+                });
+            }
+        });
+
+        const installButton = document.getElementById('installButton');
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'block';
+        });
+
+        installButton.addEventListener('click', () => {
+            installButton.style.display = 'none';
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                deferredPrompt = null;
+            });
+        });
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+    </script>
+    <script>
+    function askNotificationPermission() {
+        return new Promise(function (resolve, reject) {
+            const permissionResult = Notification.requestPermission(function (result) {
+                resolve(result);
+            });
+    
+            if (permissionResult) {
+                permissionResult.then(resolve, reject);
+            }
+        }).then(function (permissionResult) {
+            if (permissionResult !== 'granted') {
+                throw new Error('We weren\'t granted permission.');
+            }
+        });
+    }
+    
+    // Call the function to request permission
+    askNotificationPermission();
+
+    function subscribeUserToPush() {
+    navigator.serviceWorker.ready.then(function (registration) {
+        const vapidPublicKey = 'YOUR_PUBLIC_VAPID_KEY';
+        const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+
+        registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: convertedVapidKey
+        }).then(function (subscription) {
+            console.log('User is subscribed:', subscription);
+
+            // Send subscription to the server
+            fetch('/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(subscription)
+            });
+        }).catch(function (error) {
+            console.error('Failed to subscribe the user: ', error);
+        });
+    });
+}
+
+// Utility function to convert VAPID key
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+// Call the function to subscribe the user
+subscribeUserToPush();
+
+</script>
+</body>
+</html>

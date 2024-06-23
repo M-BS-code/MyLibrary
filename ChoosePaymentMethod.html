@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <style>
+
+    body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    }
+
+    header {
+    width: 100%;
+    background-color: #2d5164;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    }
+
+header .logo img {
+    height: 50px;
+    margin-right: 20px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    padding-top: 80px; /* Adjust for the fixed header height */
+}
+
+main h2 {
+    text-align: center;
+    margin: 0;
+    font-size: 24px;
+    color: #2d5164;
+    margin-bottom: 20px; /* Add some space below the title */
+}
+
+.payment-methods {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three columns on full screen */
+    gap: 30px; /* space between cards */
+    justify-content: center;
+    margin-bottom: 20px; /* extra space at the bottom */
+}
+
+.payment-method {
+    border: 1px solid #e1d4c9;
+    border-radius: 10px;
+    padding: 20px;
+    width: 200px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.payment-method:hover {
+    transform: scale(1.05);
+}
+
+.payment-method img {
+    width: 100%;
+    height: auto;
+}
+
+footer {
+    text-align: left;
+    padding: 20px;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed; /* keeps footer at the bottom */
+    bottom: 0;
+}
+
+footer p {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0;
+}
+
+footer a {
+    color: #2d5164;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+.payment-method:hover {
+    background-color: #ffffff; /* Light grey background on hover */
+    transform: scale(1.10); /* Optional: keeps the scale transformation */
+}
+
+
+@media (max-width: 768px) {
+        .payment-methods {
+          grid-template-columns: repeat(1, 1fr);
+          gap: 07px;
+          margin-bottom: 85px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .payment-methods {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="Images/Logo.png" alt="Logo">
+        </div>
+        <h1>Payment</h1>
+    </header>
+    <main>
+        <h2>choose a payment method below</h2>
+        <div class="payment-methods">
+            <div class="payment-method" onclick="window.location.href='creditCardBillingInfo.html'">
+                <img src="Images/visa.png" alt="Visa">
+                
+            </div>
+            <div class="payment-method" onclick="window.location.href='ApplePayBillingInfo.HTML'">
+                <img src="Images/applePay.png" alt="Apple Pay">
+            </div>
+            <div class="payment-method" onclick="window.location.href='CashOnDeliveryBillingInfo.html'">
+                <img src="Images/cash.png" alt="Cash">
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>Shipping Fees not included while using Visa and Apple Pay</p>
+        <a href="EmptyCart.html">Back to My Cart</a>
+    </footer>
+</body>
+</html>

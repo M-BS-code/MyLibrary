@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Homepage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="BooksMainPage.css">
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+    <script src="ebookViewer.js"></script>
+
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="images/logo.png" alt="NOVEL NOOK">
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search" id="search-input" onkeyup="searchBooks()">
+                <button type="submit" onclick="searchBooks()"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="header-right">
+                <button class="filter-btn">Filter</button>
+                <button href="UserProfile.html" class="account-btn"><i class="fas fa-user"></i>ACCOUNT</button>
+                <button id="toggleSidebarBtn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li>HOME</li>
+            <li class="dropdown">
+                <span>Books</span>
+                <div class="dropdown-content">
+                    <button onclick="filterCategory('All')">All</button>
+                    <button onclick="filterCategory('Fiction')">Fiction</button>
+                    <button onclick="filterCategory('Non-Fiction')">Non-Fiction</button>
+                    <button onclick="filterCategory('Mystery')">Mystery</button>
+                    <button onclick="filterCategory('Young Adult')">Young Adult</button>
+                    <button onclick="filterCategory('Popular')">Popular</button>
+                </div>
+            </li>
+            <li>Events</li>
+            <li>Meeting Rooms</li>
+            <li>Magazines</li>
+            <li>Programs</li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="book-list" id="book-grid">
+            <!-- Book cards will be dynamically generated here -->
+        </section>
+        <div class="pagination" id="pagination">
+            <a href="#" onclick="prevPage()">&laquo;</a>
+            <a href="#" class="active" onclick="goToPage(1)">1</a>
+            <a href="#" onclick="goToPage(2)">2</a>
+            <a href="#" onclick="goToPage(3)">3</a>
+            <a href="#">...</a>
+            <a href="#" onclick="goToPage(10)">10</a>
+            <a href="#" onclick="nextPage()">&raquo;</a>
+        </div>
+    </main>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <div class="button-container">
+                
+                <button onclick="openEBookPopup()">E-Book</button>
+                <button onclick="openAudiobookPopup()">Audiobook</button>
+            </div>
+
+            <img id="popup-image" src="" alt="Book Image">
+            <h2 id="popup-title"></h2>
+            <div class="book-header">
+                <button class="tab active" onclick="showTab('summary')">Summary</button>
+                <button class="tab" onclick="showTab('author-details')">Author Details</button>
+                <button class="tab" onclick="showTab('review')">Review</button>
+                <span class="favorite-icon" onclick="toggleFavorite(this)">&#9829;</span>
+            </div>
+            <div class="details">
+                <div>
+                    <span>Pages</span>
+                    <span id="popup-pages">248</span>
+                </div>
+                <div>
+                    <span>Published</span>
+                    <span id="popup-published">June 1, 2020</span>
+                </div>
+                <div>
+                    <span>Author</span>
+                    <span id="popup-author">Brianna Wiest</span>
+                </div>
+                <div>
+                    <span>Copies</span>
+                    <span id="popup-copies">32</span>
+                </div>
+                <div>
+                    <span>Price</span>
+                    <span id="popup-price">$20</span>
+                </div>
+            </div>
+            <div id="summary" class="description-box">
+                <!-- Summary content will             be inserted here -->
+            </div>
+            <div id="author-details" class="description-box" style="display: none;">
+                <!-- Author details content will be inserted here -->
+            </div>
+            <div id="review" class="description-box" style="display: none;">
+                <!-- Review content will be inserted here -->
+            </div>
+
+            <div class="actions">
+                <button class="buy">Buy</button>
+                <button class="borrow">Borrow</button>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div id="ebook-popup" class="ebook-popup">
+        <div class="ebook-popup-content">
+            <span class="close" onclick="closeEbookPopup()">&times;</span>
+            <h2 id="ebook-title"></h2>
+            <div id="ebook-frame-container">
+                <iframe id="ebook-frame" src=""></iframe>
+                <div id="text-layer" style="position: absolute; top: 0; left: 0; pointer-events: none;"></div>
+                
+            </div>
+         
+        </div>
+    </div>
+
+    <div id="audiobook-popup" class="audiobook-popup">
+        <div class="audiobook-popup-content">
+            <span class="close" onclick="closeAudiobookPopup()">&times;</span>
+            <img id="audiobook-image" src="" alt="Book Image" class="circle-image">
+            <h2 id="audiobook-title"></h2>
+            <div class="author" id="audiobook-author"></div>
+            <div class="chapter">Chapter 1</div>
+            <div class="audio-controls">
+                <button onclick="prevAudioChapter()"><i class="fas fa-backward"></i></button>
+                <button onclick="togglePlayPauseAudio()"><i id="play-pause-icon" class="fas fa-play"></i></button>
+                <button onclick="nextAudioChapter()"><i class="fas fa-forward"></i></button>
+            </div>
+            <div class="audio-timeline">
+                <input type="range" id="audio-timeline" min="0" max="100" value="0">
+            </div>
+        </div>
+    </div>
+    
+    
+
+    
+   
+
+    <div class="sidebar">
+        <a href="BooksMainPage.html"><img src="images/user-avatar.png" alt="Avatar" class="avatar"></a>
+        <h3>Kate Russell</h3>
+        <p>Uni Student</p>
+
+        <h4>My profile</h4>
+        <a href="UserProfile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+        <a href="#"><i class="fas fa-key icon"></i>Change password</a>
+
+        <h4>My library</h4>
+        <a href="EmptyCart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+        <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+        <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+        <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+        <a href="orederhistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+
+        <h4>Others</h4>
+        <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+        <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+        <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+
+        <div class="signout">
+            <a href="HomePage.html"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+        </div>
+    </div>
+    <div class="shadowed-background"></div>
+
+    <div class="filter-popup">
+        <div class="filter-content">
+            <div class="filter-header">
+                <span>Display Options</span>
+                <button class="close-filter-btn">&times;</button>
+            </div>
+            <div class="filter-options">
+                <button class="filter-option-btn active" id="filter-price-btn">
+                    <i class="fas fa-dollar-sign"></i>
+                </button>
+                <button class="filter-option-btn" id="filter-discount-btn">
+                    <i class="fas fa-percent"></i>
+                </button>
+                <button class="filter-option-btn" id="filter-author-btn">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="filter-option-btn" id="filter-recommended-btn">
+                    <i class="fas fa-thumbs-up"></i>
+                </button>
+            </div>
+
+            <div id="filter-price-content" class="filter-detail-content active">
+                <label>
+                    <input type="checkbox" id="high-to-low"> High to Low
+                </label>
+                <label>
+                    <input type="checkbox" id="low-to-high"> Low to High
+                </label>
+                <div class="range-inputs">
+                    <label>
+                        Price range:
+                    </label>
+                    <input type="number" id="price-min" placeholder="Min" min="0">
+                    <input type="number" id="price-max" placeholder="Max" min="0">
+                </div>
+                <label>
+                    <input type="checkbox" id="hard-copy"> Hard Copy
+                </label>
+                <label>
+                    <input type="checkbox" id="e-book"> E-Book
+                </label>
+                <label>
+                    <input type="checkbox" id="audio-book"> Audio Book
+                </label>
+            </div>
+            <div id="filter-discount-content" class="filter-detail-content">
+                <label>
+                    <input type="checkbox" id="discount-high-to-low"> High to Low
+                </label>
+                <label>
+                    <input type="checkbox" id="discount-low-to-high"> Low to High
+                </label>
+                <div class="range-inputs">
+                    <label>
+                        Discount range:
+                    </label>
+                    <input type="number" id="discount-min" placeholder="Min" min="0">
+                    <input type="number" id="discount-max" placeholder="Max" min="0">
+                </div>
+                <label>
+                    <input type="checkbox" id="discount-hard-copy"> Hard Copy
+                </label>
+                <label>
+                    <input type="checkbox" id="discount-e-book"> E-Book
+                </label>
+                <label>
+                    <input type="checkbox" id="discount-audio-book"> Audio Book
+                </label>
+            </div>
+            <div id="filter-author-content" class="filter-detail-content">
+                <label>
+                    <input type="checkbox" id="a-z"> A - Z
+                </label>
+                <label>
+                    <input type="checkbox" id="z-a"> Z - A
+                </label>
+                <div class="range-inputs">
+                    <label>
+                        Author name:
+                    </label>
+                    <input type="text" id="author-name" placeholder="Author name">
+                </div>
+                <label>
+                    <input type="checkbox" id="author-hard-copy"> Hard Copy
+                </label>
+                <label>
+                    <input type="checkbox" id="author-e-book"> E-Book
+                </label>
+                <label>
+                    <input type="checkbox" id="author-audio-book"> Audio Book
+                </label>
+            </div>
+            <div id="filter-recommended-content" class="filter-detail-content">
+                <label>
+                    <input type="checkbox" id="recommended-high-to-low"> High to Low
+                </label>
+                <label>
+                    <input type="checkbox" id="recommended-low-to-high"> Low to High
+                </label>
+                <div class="range-inputs">
+                    <label>
+                        Rating range:
+                    </label>
+                    <input type="number" id="rating-min" placeholder="Min" min="1" max="6">
+                    <input type="number" id="rating-max" placeholder="Max" min="1" max="6">
+                </div>
+                <label>
+                    <input type="checkbox" id="recommended-hard-copy"> Hard Copy
+                </label>
+                <label>
+                    <input type="checkbox" id="recommended-e-book"> E-Book
+                </label>
+                <label>
+                    <input type="checkbox" id="recommended-audio-book"> Audio Book
+                </label>
+            </div>
+
+            <div class="filter-actions">
+                <button class="apply-filter-btn">Apply</button>
+                <button class="reset-filter-btn">Reset</button>
+                <button class="cancel-filter-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const books = [
+            {
+                title: "The Veiled Kingdom",
+                image: "Images/veiled-kingdom.jpg",
+                category: "Fiction",
+                description: "A gripping tale of hidden realms and forbidden love.",
+                authorDetails: "Anna Blackwell is a renowned author known for her fantasy novels.",
+                review: "An enthralling book that keeps you hooked till the end.",
+                pages: 350,
+                published: "July 15, 2021",
+                author: "Anna Blackwell",
+                eBook: "EBook/TheVeiledKingdom.pdf",
+                copies: 10,
+                price: 45,
+                rate: 4,
+                audiobook: {
+                    chapters: [
+                        { name: "Chapter 1", src: "audio/veiledKingdomChapter1.mp3" },
+                        { name: "Chapter 2", src: "audio/veiledKingdomChapter2.mp3" },
+                        { name: "Chapter 3", src: "audio/veiledKingdomChapter3.mp3" }
+                    ],
+                    audioSrc: "audio/veiledKingdomChapter1.mp3"
+                }
+            },
+            {
+                title: "Powerless",
+                image: "Images/powerless.jpg",
+                category: "Fiction",
+                description: "A story of survival and resilience in a dystopian world.",
+                authorDetails: "James Stone writes compelling dystopian narratives.",
+                review: "A captivating story of human resilience.",
+                pages: 300,
+                published: "June 20, 2022",
+                author: "James Stone",
+                copies: 8,
+                price: 40,
+                rate: 5,
+            },
+            {
+                title: "Divine Rivals",
+                image: "Images/divine-rivals.jpg",
+                category: "Fiction",
+                description: "A thrilling competition between gods and mortals.",
+                authorDetails: "Lily Hart is known for her imaginative storytelling.",
+                review: "A thrilling and imaginative tale.",
+                pages: 400,
+                published: "March 15, 2023",
+                author: "Lily Hart",
+                copies: 12,
+                price: 50,
+                rate: 4,
+            },
+            {
+                title: "Talking to Strangers",
+                image: "Images/talking-to-strangers.jpg",
+                category: "Non-Fiction",
+                description: "An exploration of human interactions and misunderstandings.",
+                authorDetails: "Malcolm Gladwell is a bestselling author and journalist.",
+                review: "A thought-provoking analysis of human interactions.",
+                pages: 250,
+                published: "October 1, 2020",
+                author: "Malcolm Gladwell",
+                copies: 15,
+                price: 35,
+                rate: 2,
+            },
+            {
+                title: "The Housemaid's Secret",
+                image: "Images/the-housemaids-secret.jpg",
+                category: "Mystery",
+                description: "A mystery of a housemaid with a dark past.",
+                authorDetails: "Freida McFadden crafts suspenseful and thrilling mysteries.",
+                review: "A dark and suspenseful tale.",
+                pages: 320,
+                published: "November 15, 2022",
+                author: "Freida McFadden",
+                copies: 11,
+                price: 45,
+                rate: 6,
+            },
+            {
+                title: "The Mountain is You",
+                image: "Images/the-mountain-is-you.jpg",
+                category: "Non-Fiction",
+                description: "A self-help guide to overcoming personal challenges.",
+                authorDetails: "Brianna Wiest writes insightful and inspiring self-help books.",
+                review: "A powerful guide to personal growth.",
+                pages: 200,
+                published: "January 1, 2021",
+                author: "Brianna Wiest",
+                eBook: "EBook/TheMountainIsYou.pdf",
+                copies: 10,
+                price: 30,
+                rate: 6,
+                audiobook: {
+                    chapters: [
+                        { name: "Chapter 1", src: "audio/theMountainIsYouChapter1.mp3" },
+                        { name: "Chapter 2", src: "audio/theMountainIsYouChapter2.mp3" },
+                        { name: "Chapter 2", src: "audio/theMountainIsYouChapter2.mp3" }
+                    ],
+                    audioSrc: "audio/theMountainIsYouChapter1.mp3"
+                }
+            },
+            {
+                title: "If You Could See the Sun",
+                image: "Images/if-you-could-see-the-sun.jpg",
+                category: "Young Adult",
+                description: "A young adult novel about invisibility and self-discovery.",
+                authorDetails: "Ann Liang explores unique and engaging young adult themes.",
+                review: "An intriguing story of invisibility and self-discovery.",
+                pages: 280,
+                published: "September 15, 2022",
+                author: "Ann Liang",
+                eBook: "EBook/ifYouCouldSeeTheSun.pdf",
+                copies: 9,
+                price: 40,
+                rate: 4,
+                audiobook: {
+                    chapters: [
+                        { name: "Chapter 1", src: "audio/ifYouCouldSeeTheSunChapter1.mp3" },
+                        { name: "Chapter 2", src: "audio/ifYouCouldSeeTheSunChapter2.mp3" },
+                        { name: "Chapter 3", src: "audio/ifYouCouldSeeTheSunChapter3.mp3" }
+                    ],
+                    audioSrc: "audio/ifYouCouldSeeTheSunChapter1.mp3"
+                }
+            },
+            {
+                title: "Atomic Habits",
+                image: "Images/atomic-habits.jpg",
+                category: "Popular",
+                description: "A guide to building good habits and breaking bad ones.",
+                authorDetails: "James Clear is a leading expert on habit formation.",
+                review: "A practical and effective guide to habit formation.",
+                pages: 300,
+                published: "February 15, 2021",
+                author: "James Clear",
+                copies: 12,
+                price: 50,
+                rate: 3,
+            },
+            {
+                title: "Before the Coffee Gets Cold",
+                image: "Images/BeforTheCoffee.jpg",
+                category: "Fiction",
+                description: "A magical tale about a coffee shop that allows time travel.",
+                authorDetails: "Toshikazu Kawaguchi writes whimsical and heartwarming stories.",
+                review: "A heartwarming and magical story.",
+                pages: 320,
+                published: "April 1, 2022",
+                author: "Toshikazu Kawaguchi",
+                copies: 10,
+                price: 45,
+                rate: 5,
+            },
+            {
+                title: "Fairy Tale",
+                image: "Images/FairyTale.jpg",
+                category: "Fiction",
+                description: "A captivating fantasy about a hidden magical world.",
+                authorDetails: "Stephen King is a master storyteller in multiple genres.",
+                review: "An imaginative and thrilling fantasy.",
+                pages: 400,
+                published: "May 15, 2023",
+                author: "Stephen King",
+                copies: 11,
+                price: 50,
+                rate: 2,
+            },
+            {
+                title: "These Infinite Threads",
+                image: "Images/TheseInfiniteThreads.jpg",
+                category: "Fiction",
+                description: "An epic saga of interwoven destinies and conflicts.",
+                authorDetails: "Tahereh Mafi creates rich and intricate narratives.",
+                review: "A richly woven tale of destiny and conflict.",
+                pages: 350,
+                published: "June 20, 2022",
+                author: "Tahereh Mafi",
+                eBook: "EBook/TheseInfiniteThreads.pdf",
+                copies: 9,
+                price: 45,
+                rate: 3,
+                audiobook: {
+                    chapters: [
+                        { name: "Chapter 1", src: "audio/theseInfiniteThreadsChapter1.mp3" },
+                        { name: "Chapter 2", src: "audio/theseInfiniteThreadsChapter2.mp3" },
+                        { name: "Chapter 3", src: "audio/theseInfiniteThreadsChapter3.mp3" }
+                    ],
+                    audioSrc: "audio/theseInfiniteThreadsChapter1.mp3"
+                }
+            },
+            {
+                title: "Thinking, Fast and Slow",
+                image: "Images/ThinkingFastandSlow.jpg",
+                category: "Non-Fiction",
+                description: "An examination of the two systems that drive the way we think.",
+                authorDetails: "Daniel Kahneman is a Nobel laureate and cognitive psychologist.",
+                review: "A deep dive into the workings of the human mind.",
+                pages: 250,
+                published: "October 1, 2020",
+                author: "Daniel Kahneman",
+                copies: 15,
+                price: 35,
+                rate: 2,
+            },
+            {
+                title: "The Psychology of Money",
+                image: "Images/ThePsychologyofMoney.jpg",
+                category: "Non-Fiction",
+                description: "Timeless lessons on wealth, greed, and happiness.",
+                authorDetails: "Morgan Housel is a prominent financial writer.",
+                review: "A thoughtful exploration of financial behaviors.",
+                pages: 300,
+                published: "January 1, 2021",
+                author: "Morgan Housel",
+                copies: 12,
+                price: 40,
+                rate: 6,
+            },
+            {
+                title: "I’m Glad My Mom Died",
+                image: "Images/ImGladMyMomDied.jpg",
+                category: "Non-Fiction",
+                description: "A memoir of a complicated mother-daughter relationship.",
+                authorDetails: "Jennette McCurdy shares her personal and poignant story.",
+                review: "A heartfelt and emotional memoir.",
+                pages: 200,
+                published: "July 15, 2021",
+                author: "Jennette McCurdy",
+                eBook: "EBook/ImGladMyMomDied.pdf",
+                copies: 10,
+                price: 30,
+                rate: 4,
+                audiobook: {
+                    chapters: [
+                        { name: "Chapter 1", src: "audio/imGladMyMomDiedChapter1.mp3" },
+                        { name: "Chapter 2", src: "audio/imGladMyMomDiedChapter2.mp3" },
+                        { name: "Chapter 3", src: "audio/imGladMyMomDiedChapter3.mp3" }
+                    ],
+                    audioSrc: "audio/imGladMyMomDiedChapter1.mp3"
+                }
+            },
+            {
+                title: "Time Management for Mortals",
+                image: "Images/TimeManagementforMortal.jpg",
+                category: "Non-Fiction",
+                description: "Strategies for making the most of your limited time.",
+                authorDetails: "Oliver Burkeman offers practical time management advice.",
+                review: "A practical guide to managing your time effectively.",
+                pages: 250,
+                published: "March 15, 2023",
+                author: "Oliver Burkeman",
+                copies: 11,
+                price: 35,
+                rate: 2,
+            },
+            {
+                title: "The 48 Laws of Power",
+                image: "Images/The48LawsofPower.jpg",
+                category: "Non-Fiction",
+                description: "A guide to understanding and gaining power.",
+                authorDetails: "Robert Greene is an author known for his works on strategy and power.",
+                review: "A fascinating guide to power dynamics.",
+                pages: 300,
+                published: "February 15, 2021",
+                author: "Robert Greene",
+                eBook: "EBook/The48LawsofPower.pdf",
+                copies: 12,
+                price: 40,
+                rate: 6,
+                audiobook: {
+                    chapters: [
+                        { name: "Chapter 1", src: "audio/the48LawsofPowerChapter1.mp3" },
+                        { name: "Chapter 2", src: "audio/the48LawsofPowerChapter2.mp3" },
+                        { name: "Chapter 3", src: "audio/the48LawsofPowerChapter3.mp3" }
+                    ],
+                    audioSrc: "audio/the48LawsofPowerChapter1.mp3"
+                }
+            },
+            {
+                title: "The Naturals",
+                image: "Images/TheNaturals.jpg",
+                category: "Mystery",
+                description: "A young girl with a talent for profiling teams up with the FBI.",
+                authorDetails: "Jennifer Lynn Barnes is known for her engaging mystery novels.",
+                review: "A thrilling and engaging mystery.",
+                pages: 320,
+                published: "November 15, 2022",
+                author: "Jennifer Lynn Barnes",
+                copies: 9,
+                price: 45,
+                rate: 4,
+            },
+            {
+                title: "Everyone on This Train is a Suspect",
+                image: "Images/EveryoneonThisTrainisaSuspect.jpg",
+                category: "Mystery",
+                description: "A thrilling whodunit set on a train journey.",
+                authorDetails: "M.W. Craven writes intriguing and suspenseful thrillers.",
+                review: "A gripping and thrilling mystery.",
+                pages: 350,
+                published: "September 15, 2022",
+                author: "M.W. Craven",
+                copies: 10,
+                price: 45,
+                rate: 3,
+            },
+            {
+                title: "The Reappearance of Rachel Price",
+                image: "Images/TheReappearanceofRachelPrice.jpg",
+                category: "Mystery",
+                description: "A mysterious disappearance and an unexpected return.",
+                authorDetails: "Eva Lesko Natiello weaves intricate and compelling mysteries.",
+                review: "A captivating and mysterious tale.",
+                pages: 400,
+                published: "May 15, 2023",
+                author: "Eva Lesko Natiello",
+                copies: 11,
+                price: 50,
+                rate: 4,
+            },
+            {
+                title: "A Good Girl’s Guide to Murder",
+                image: "Images/AGoodGirlsGuidetoMurder.jpg",
+                category: "Mystery",
+                description: "A student investigates a local murder for her senior project.",
+                authorDetails: "Holly Jackson is known for her engaging young adult mysteries.",
+                review: "A gripping and thrilling young adult mystery.",
+                pages: 280,
+                published: "April 1, 2022",
+                author: "Holly Jackson",
+                eBook: "EBook/AGoodGirlsGuidetoMurder.pdf",
+                copies: 9,
+                price: 40,
+                rate: 3,
+                audiobook: {
+                    chapters: [
+                        { name: "Chapter 1", src: "audio/aGoodGirlsGuidetoMurderChapter1.mp3" },
+                        { name: "Chapter 2", src: "audio/aGoodGirlsGuidetoMurderChapter2.mp3" },
+                        { name: "Chapter 3", src: "audio/aGoodGirlsGuidetoMurderChapter3.mp3" }
+                    ],
+                    audioSrc: "audio/aGoodGirlsGuidetoMurderChapter1.mp3"
+                }
+            },
+            {
+                title: "Murder Road",
+                image: "Images/MurderRoad.jpg",
+                category: "Mystery",
+                description: "A detective uncovers dark secrets in a small town.",
+                authorDetails: "Sam Blake writes intense and gripping mystery novels.",
+                review: "A dark and gripping detective story.",
+                pages: 320,
+                published: "June 20, 2022",
+                author: "Sam Blake",
+                copies: 10,
+                price: 45,
+                rate: 1,
+            },
+            {
+                title: "How to Solve Your Own Murder",
+                image: "Images/HowtoSolveYourOwnMurder.jpg",
+                category: "Mystery",
+                description: "A unique guide to investigating and solving crimes.",
+                authorDetails: "K.J. Young offers unique and engaging investigative stories.",
+                review: "A fascinating guide to solving crimes.",
+                pages: 350,
+                published: "March 15, 2023",
+                author: "K.J. Young",
+                eBook: "EBook/HowtoSolveYourOwnMurder.pdf",
+                copies: 11,
+                price: 50,
+                rate: 5,
+                audiobook: {
+                    chapters: [
+                        { name: "Chapter 1", src: "audio/howtoSolveYourOwnMurderChapter1.mp3" },
+                        { name: "Chapter 2", src: "audio/howtoSolveYourOwnMurderChapter2.mp3" },
+                        { name: "Chapter 3", src: "audio/howtoSolveYourOwnMurderChapter3.mp3" }
+                    ],
+                    audioSrc: "audio/howtoSolveYourOwnMurderChapter1.mp3"
+                }
+            },
+            {
+                title: "The Queen of Nothing",
+                image: "Images/TheQueenofNothing.jpg",
+                category: "Young Adult",
+                description: "The final book in the captivating Folk of the Air series.",
+                authorDetails: "Holly Black is a bestselling author of fantasy novels.",
+                review: "A stunning conclusion to a beloved series.",
+                pages: 280,
+                published: "September 15, 2022",
+                author: "Holly Black",
+                copies: 9,
+                price: 40,
+                rate: 4,
+            },
+            {
+                title: "Fourth Wing",
+                image: "Images/FourthWing.jpg",
+                category: "Popular",
+                description: "A young adult fantasy about dragons and warfare.",
+                authorDetails: "Rebecca Yarros writes intense and captivating fantasy novels.",
+                review: "A thrilling fantasy adventure.",
+                pages: 300,
+                published: "February 15, 2021",
+                author: "Rebecca Yarros",
+                copies: 12,
+                price: 50,
+                rate: 2,
+            },
+            {
+                title: "The Invisible Life of Addie LaRue",
+                image: "Images/TheInvisibleLifeofAddieLarue.jpg",
+                category: "Popular",
+                description: "A story of a woman cursed to be forgotten by everyone she meets.",
+                authorDetails: "V.E. Schwab is known for her inventive and captivating stories.",
+                review: "A beautifully written and imaginative tale.",
+                pages: 320,
+                published: "April 1, 2022",
+                author: "V.E. Schwab",
+                copies: 10,
+                price: 45,
+                rate: 1,
+            },
+            {
+                title: "Babel",
+                image: "Images/Babel.jpg",
+                category: "Popular",
+                description: "A historical fantasy exploring language and power.",
+                authorDetails: "R.F. Kuang writes thought-provoking and immersive stories.",
+                review: "An insightful and powerful historical fantasy.",
+                pages: 350,
+                published: "May 15, 2023",
+                author: "R.F. Kuang",
+                eBook: "EBook/Babel.pdf",
+                copies: 11,
+                price: 50,
+                rate: 6,
+                audiobook: {
+                    chapters: [
+                        { name: "Chapter 1", src: "audio/babelChapter1.mp3" },
+                        { name: "Chapter 2", src: "audio/babelChapter2.mp3" },
+                        { name: "Chapter 2", src: "audio/babelChapter2.mp3" }
+                    ],
+                    audioSrc: "audio/babelChapter1.mp3"
+                }
+            },
+            {
+                title: "From Blood and Ash",
+                image: "Images/FromBloodandAsh.jpg",
+                category: "Popular",
+                description: "A romantic fantasy about a young woman chosen from birth to usher in a new era.",
+                authorDetails: "Jennifer L. Armentrout is a prolific author of fantasy and romance.",
+                review: "A captivating blend of romance and fantasy.",
+                pages: 400,
+                published: "June 20, 2022",
+                author: "Jennifer L. Armentrout",
+                copies: 9,
+                price: 50,
+                rate: 4,
+            }
+        ];
+
+        const booksPerPage = 10;
+        let currentPage = 1;
+        let currentCategory = 'All';
+
+        function displayBooks(page, category = 'All') {
+            const startIndex = (page - 1) * booksPerPage;
+            const filteredBooks = category === 'All' ? books : books.filter(book => book.category === category);
+            const booksToDisplay = filteredBooks.slice(startIndex, startIndex + booksPerPage);
+
+            const bookGrid = document.getElementById('book-grid');
+            bookGrid.innerHTML = '';
+
+            booksToDisplay.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                    <div class="book-image-container">
+                        <img src="${book.image}" alt="${book.title}" class="book-image">
+                        <div class="overlay" onclick="showPopup('${book.title}', '${book.image}', '${book.description}', '${book.authorDetails}', '${book.review}', '${book.pages}', '${book.published}', '${book.author}', '${book.copies}', '${book.price}', '${book.eBook}')">Click to read more</div>
+                    </div>
+                    <h3>${book.title}</h3>
+                    <button class="buy" onclick="buyBook('${book.title}', '${book.image}', ${book.price})">Buy for AED ${book.price}</button>
+                    <button class="borrow">Borrow</button>
+                    <span class="favorite" onclick="toggleFavorite(this)">&#9829;</span>
+                `;
+                bookGrid.appendChild(bookCard);
+            });
+
+            updatePagination(filteredBooks.length);
+        }
+
+        function buyBook(title, image, price) {
+            const book = {
+                title: title,
+                image: image,
+                price: parseFloat(price),
+                quantity: 1
+            };
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingIndex = cart.findIndex(item => item.title === title);
+
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += 1;
+            } else {
+                cart.push(book);
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Book added to cart');
+            updateCart();
+        }
+
+        function showPopup(title, image, description, authorDetails, review, pages, published, author, copies, price, eBook) {
+            document.getElementById('popup-title').innerText = title;
+            document.getElementById('popup-image').src = image;
+            document.getElementById('summary').innerText = description;
+            document.getElementById('author-details').innerText = authorDetails;
+            document.getElementById('review').innerText = review;
+            document.getElementById('popup-pages').innerText = pages;
+            document.getElementById('popup-published').innerText = published;
+            document.getElementById('popup-author').innerText = author;
+            document.getElementById('popup-copies').innerText = copies;
+            document.getElementById('popup-price').innerText = price;
+            document.getElementById('popup').style.display = 'block';
+
+            showTab('summary');
+            const buyButton = document.querySelector('.popup-content .buy');
+            buyButton.onclick = () => buyBook(title, image, price);
+
+            const ebookButton = document.querySelector('.button-container button[onclick="openEBookPopup()"]');
+            ebookButton.onclick = () => openEBook(title, eBook);
+
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.description-box');
+
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            contents.forEach(content => {
+                content.style.display = 'none';
+            });
+
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName).style.display = 'block';
+        }
+
+      
+
+        
+        function openEBook(title, ebookSrc) {
+    document.getElementById('ebook-title').innerText = title;
+    document.getElementById('ebook-frame').src = ebookSrc;
+    document.getElementById('ebook-popup').style.display = 'flex';
+
+    // Adjust for two-page view if necessary
+    document.getElementById('ebook-frame').onload = function () {
+        const frameDoc = document.getElementById('ebook-frame').contentDocument;
+        const pages = frameDoc.querySelectorAll('.page');
+        pages.forEach(page => {
+            page.classList.add('pdf-page');
+        });
+
+        const container = document.createElement('div');
+        container.className = 'pdf-view';
+        pages.forEach(page => {
+            container.appendChild(page);
+        });
+
+        frameDoc.body.innerHTML = '';
+        frameDoc.body.appendChild(container);
+    };
+}
+
+function closeEbookPopup() {
+    document.getElementById('ebook-popup').style.display = 'none';
+}
+
+
+
+       
+
+        function closeEbookPopup() {
+            document.getElementById('ebook-popup').style.display = 'none';
+        }
+
+        function toggleFavorite(element) {
+            element.classList.toggle('active');
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayBooks(currentPage, currentCategory);
+            }
+        }
+
+        function nextPage() {
+            const filteredBooks = currentCategory === 'All' ? books : books.filter(book => book.category === currentCategory);
+            if (currentPage < Math.ceil(filteredBooks.length / booksPerPage)) {
+                currentPage++;
+                displayBooks(currentPage, currentCategory);
+            }
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            displayBooks(page, currentCategory);
+        }
+
+        function updatePagination(totalBooks) {
+            const totalPages = Math.ceil(totalBooks / booksPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = `
+                <a href="#" onclick="prevPage()">&laquo;</a>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                pagination.innerHTML += `
+                    <a href="#" class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</a>
+                `;
+            }
+
+            pagination.innerHTML += `
+                <a href="#" onclick="nextPage()">&raquo;</a>
+            `;
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            currentPage = 1;
+            displayBooks(currentPage, currentCategory);
+        }
+
+        function searchBooks() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const filteredBooks = books.filter(book => book.title.toLowerCase().includes(searchInput));
+            displayFilteredBooks(filteredBooks);
+        }
+
+        function displayFilteredBooks(filteredBooks) {
+            const bookGrid = document.getElementById('book-grid');
+            bookGrid.innerHTML = '';
+
+            filteredBooks.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                    <div class="book-image-container">
+                        <img src="${book.image}" alt="${book.title}" class="book-image">
+                        <div class="overlay" onclick="showPopup('${book.title}', '${book.image}', '${book.description}', '${book.authorDetails}', '${book.review}', '${book.pages}', '${book.published}', '${book.author}', '${book.copies}', '${book.price}', '${book.eBook}')">Click to read more</div>
+                    </div>
+                    <h3>${book.title}</h3>
+                    <button class="buy" onclick="buyBook('${book.title}', '${book.image}', ${book.price})">Buy for AED ${book.price}</button>
+                    <button class="borrow">Borrow</button>
+                    <span class="favorite" onclick="toggleFavorite(this)">&#9829;</span>
+                `;
+                bookGrid.appendChild(bookCard);
+            });
+
+            updatePagination(filteredBooks.length);
+        }
+
+        function applyFilters() {
+            const highToLow = document.getElementById('high-to-low').checked;
+            const lowToHigh = document.getElementById('low-to-high').checked;
+            const priceMin = document.getElementById('price-min').value;
+            const priceMax = document.getElementById('price-max').value;
+            const hardCopy = document.getElementById('hard-copy').checked;
+            const eBook = document.getElementById('e-book').checked;
+            const audioBook = document.getElementById('audio-book').checked;
+            const discountHighToLow = document.getElementById('discount-high-to-low').checked;
+            const discountLowToHigh = document.getElementById('discount-low-to-high').checked;
+            const discountMin = document.getElementById('discount-min').value;
+            const discountMax = document.getElementById('discount-max').value;
+            const authorAZ = document.getElementById('a-z').checked;
+            const authorZA = document.getElementById('z-a').checked;
+            const authorName = document.getElementById('author-name').value.toLowerCase();
+            const recommendedHighToLow = document.getElementById('recommended-high-to-low').checked;
+            const recommendedLowToHigh = document.getElementById('recommended-low-to-high').checked;
+            const ratingMin = document.getElementById('rating-min').value;
+            const ratingMax = document.getElementById('rating-max').value;
+
+            let filteredBooks = books;
+
+            // Price sorting
+            if (highToLow) {
+                filteredBooks.sort((a, b) => b.price - a.price);
+            } else if (lowToHigh) {
+                filteredBooks.sort((a, b) => a.price - b.price);
+            }
+
+            // Price filtering
+            filteredBooks = filteredBooks.filter(book => {
+                let matches = true;
+
+                if (priceMin) matches = matches && book.price >= priceMin;
+                if (priceMax) matches = matches && book.price <= priceMax;
+                if (hardCopy) matches = matches && book.category === 'Hard Copy';
+                if (eBook) matches = matches && book.category === 'E-Book';
+                if (audioBook) matches = matches && book.category === 'Audio Book';
+
+                return matches;
+            });
+
+            // Discount sorting
+            if (discountHighToLow) {
+                filteredBooks.sort((a, b) => b.discount - a.discount);
+            } else if (discountLowToHigh) {
+                filteredBooks.sort((a, b) => a.discount - b.discount);
+            }
+
+            // Discount filtering
+            filteredBooks = filteredBooks.filter(book => {
+                let matches = true;
+
+                if (discountMin) matches = matches && book.discount >= discountMin;
+                if (discountMax) matches = matches && book.discount <= discountMax;
+
+                return matches;
+            });
+
+            // Author sorting
+            if (authorAZ) {
+                filteredBooks.sort((a, b) => a.author.localeCompare(b.author));
+            } else if (authorZA) {
+                filteredBooks.sort((a, b) => b.author.localeCompare(a.author));
+            }
+
+            // Author name filtering
+            if (authorName) {
+                filteredBooks = filteredBooks.filter(book => book.author.toLowerCase().includes(authorName));
+            }
+
+            // Recommendation sorting
+            if (recommendedHighToLow) {
+                filteredBooks.sort((a, b) => b.rate - a.rate);
+            } else if (recommendedLowToHigh) {
+                filteredBooks.sort((a, b) => a.rate - b.rate);
+            }
+
+            // Rating filtering
+            filteredBooks = filteredBooks.filter(book => {
+                let matches = true;
+
+                if (ratingMin) matches = matches && book.rate >= ratingMin;
+                if (ratingMax) matches = matches && book.rate <= ratingMax;
+
+                return matches;
+            });
+
+            displayFilteredBooks(filteredBooks);
+            closeFilterPopup();
+        }
+
+        function resetFilters() {
+            document.getElementById('high-to-low').checked = false;
+            document.getElementById('low-to-high').checked = false;
+            document.getElementById('price-min').value = '';
+            document.getElementById('price-max').value = '';
+            document.getElementById('hard-copy').checked = false;
+            document.getElementById('e-book').checked = false;
+            document.getElementById('audio-book').checked = false;
+            document.getElementById('discount-high-to-low').checked = false;
+            document.getElementById('discount-low-to-high').checked = false;
+            document.getElementById('discount-min').value = '';
+            document.getElementById('discount-max').value = '';
+            document.getElementById('a-z').checked = false;
+            document.getElementById('z-a').checked = false;
+            document.getElementById('author-name').value = '';
+            document.getElementById('recommended-high-to-low').checked = false;
+            document.getElementById('recommended-low-to-high').checked = false;
+            document.getElementById('rating-min').value = '';
+            document.getElementById('rating-max').value = '';
+
+            displayBooks(currentPage, currentCategory);
+            closeFilterPopup();
+        }
+
+        function closeFilterPopup() {
+            document.querySelector('.filter-popup').style.display = 'none';
+        }
+
+        document.querySelector('.filter-btn').addEventListener('click', () => {
+            document.querySelector('.filter-popup').style.display = 'flex';
+        });
+
+        document.querySelector('.close-filter-btn').addEventListener('click', closeFilterPopup);
+        document.querySelector('.cancel-filter-btn').addEventListener('click', closeFilterPopup);
+        document.querySelector('.apply-filter-btn').addEventListener('click', applyFilters);
+        document.querySelector('.reset-filter-btn').addEventListener('click', resetFilters);
+
+        const filterOptionButtons = document.querySelectorAll('.filter-option-btn');
+        const filterDetailContents = document.querySelectorAll('.filter-detail-content');
+
+        filterOptionButtons.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                filterOptionButtons.forEach(button => button.classList.remove('active'));
+                filterDetailContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                filterOptionButtons[index].classList.add('active');
+                filterDetailContents[index].classList.add('active');
+            });
+        });
+
+        // Ensure the Price button is set as the default active button when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('filter-price-btn').click();
+        });
+
+        // Initialization of the books display
+        displayBooks(1);
+        document.querySelector('.account-btn').addEventListener('click', () => {
+            window.location.href = 'UserProfile.html';
+        });
+
+        document.querySelector('#toggleSidebarBtn').addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.add('sidebar-active');
+            document.querySelector('.shadowed-background').style.display = 'block';
+        });
+
+        document.querySelector('.shadowed-background').addEventListener('click', closeSidebar);
+
+        function closeSidebar() {
+            document.querySelector('.sidebar').classList.remove('sidebar-active');
+            document.querySelector('.shadowed-background').style.display = 'none';
+        }
+
+        // Add a close button inside the sidebar
+        const closeSidebarBtn = document.createElement('button');
+        closeSidebarBtn.innerHTML = '&times;';
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+        document.querySelector('.sidebar').insertBefore(closeSidebarBtn, document.querySelector('.sidebar').firstChild);
+
+     
+        
+        function openAudiobookPopup() {
+    const audiobookPopup = document.getElementById('audiobook-popup');
+    audiobookPopup.style.display = 'block';
+
+    // Assuming you have a way to get the audio source URL and other details
+    const audioSrc = 'path/to/audiobook.mp3'; // Replace with actual audio source
+    const audioElement = new Audio(audioSrc);
+    audioElement.id = 'audio-element';
+    document.body.appendChild(audioElement);
+
+    audioElement.addEventListener('timeupdate', updateAudioTimeline);
+
+    document.getElementById('audio-timeline').addEventListener('input', (e) => {
+        audioElement.currentTime = e.target.value;
+    });
+}
+
+function closeAudiobookPopup() {
+    const audiobookPopup = document.getElementById('audiobook-popup');
+    audiobookPopup.style.display = 'none';
+    const audioElement = document.getElementById('audio-element');
+    if (audioElement) {
+        audioElement.pause();
+        document.body.removeChild(audioElement);
+    }
+}
+
+function togglePlayPauseAudio() {
+    const audioElement = document.getElementById('audio-element');
+    const playPauseIcon = document.getElementById('play-pause-icon');
+    if (audioElement.paused) {
+        audioElement.play();
+        playPauseIcon.classList.remove('fa-play');
+        playPauseIcon.classList.add('fa-pause');
+    } else {
+        audioElement.pause();
+        playPauseIcon.classList.remove('fa-pause');
+        playPauseIcon.classList.add('fa-play');
+    }
+}
+
+function updateAudioTimeline() {
+    const audioElement = document.getElementById('audio-element');
+    const timeline = document.getElementById('audio-timeline');
+    timeline.max = audioElement.duration;
+    timeline.value = audioElement.currentTime;
+}
+
+function prevAudioChapter() {
+    // Implement logic for previous chapter
+}
+
+function nextAudioChapter() {
+    // Implement logic for next chapter
+}
+
+       
+
+
+
+
+    </script>
+
+
+</body>
+
+</html>
+

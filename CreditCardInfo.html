@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        header {
+            background-color: #2f4a60;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        header .logo {
+            position: absolute;
+            left: 20px;
+        }
+
+        header .logo img {
+            width: 50px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .progress-bar .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #d9d9d9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .progress-bar .step.active {
+            background-color: #2f4a60;
+        }
+
+        .content {
+            display: flex;
+            width: 100%;
+            max-width: 1400px;
+            gap: 40px;
+            justify-content: center;
+        }
+
+        .left-container, .right-container {
+            flex: 1;
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-container h2, .right-container h2 {
+            color: #2f4a60;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .left-container .card {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #d9d9d9;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 300px;
+            margin: 120px auto;
+        }
+
+        .left-container .card img {
+            width: 100%;
+        }
+
+        .left-container a {
+            color: #2f4a60;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .left-container a:hover {
+            text-decoration: underline;
+        }
+
+        .right-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .right-container form label {
+            color: #2f4a60;
+            font-size: 18px;
+        }
+
+        .right-container form input, .right-container form select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .right-container form .row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .right-container form .row input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .right-container form .checkbox-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+            font-size: 14px;
+        }
+
+        .right-container form button {
+            background-color: #2f4a60;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            align-self: flex-end;
+        }
+
+        .right-container form button:hover {
+            background-color: #1e3448;
+        }
+
+        .right-container form .policy {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .relative-input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .relative-input-container input {
+            padding-right: 50px;
+        }
+
+        .relative-input-container img {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .left-container, .right-container {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .left-container .card {
+                margin: 40px auto;
+            }
+
+            .right-container form .row {
+                flex-direction: column;
+            }
+
+            .right-container form .row input {
+                margin-bottom: 20px;
+            }
+
+            .right-container form .row input:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .left-container h2, .right-container h2 {
+                font-size: 20px;
+            }
+
+            .right-container form label {
+                font-size: 16px;
+            }
+
+            .right-container form .policy {
+                padding: 15px;
+            }
+        }
+
+        input.input-error {
+            border: 2px solid red !important;
+        }
+    </style>
+<body>
+    <header>
+        <div class="logo">
+            <img src="Images/Logo.png" alt="Logo">
+        </div>
+        <h1>Payment</h1>
+    </header>
+    <main>
+        <div class="content">
+            <div class="left-container">
+                <div class="progress-bar">
+                    <div class="step active">1</div>
+                    <div class="step active">2</div>
+                    <div class="step">3</div>
+                </div>
+                <h2>Payment Method</h2>
+                <div class="card">
+                    <img src="Images/visa.png" alt="Visa">
+                </div>
+                <a href="EmptyCart.html">Back to My Cart</a>
+            </div>
+            <div class="right-container">
+                <h2>Add Credit / Debit Card</h2>
+                <form id="card-form" onsubmit="return validateForm()">
+                    <label for="cardholder-name">Card Holder's Name</label>
+                    <input type="text" id="cardholder-name" placeholder="Card Holder's Name" required>
+                    <div class="error-message" id="cardholder-name-error">Card Holder's Name is required</div>
+                    
+                    <label for="card-number">Card Number</label>
+                    <div class="relative-input-container">
+                        <input type="text" id="card-number" placeholder="5470 0004 0003 0002" required>
+                        <img src="Images/visa.png" alt="Visa">
+                    </div>
+                    <div class="error-message" id="card-number-error">Card Number must be exactly 16 digits</div>
+                    
+                    <div class="row">
+                        <div>
+                            <label for="expire-month">Expire Date</label>
+                            <input type="text" id="expire-month" placeholder="MM" required>
+                            <div class="error-message" id="expire-month-error">Expire Month is required and must be between 01 and 12</div>
+                        </div>
+                        <div>
+                            <label for="expire-year">&nbsp;</label>
+                            <input type="text" id="expire-year" placeholder="YYYY" required>
+                            <div class="error-message" id="expire-year-error">Expire Year is required and must be exactly 4 digits</div>
+                        </div>
+                    </div>
+                    <label for="security-code">Security Code</label>
+                    <input type="text" id="security-code" placeholder="Security Code" required>
+                    <div class="error-message" id="security-code-error">Security Code is required</div>
+                    
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="remember-card">
+                        <label for="remember-card">Remember my card for next purchases.</label>
+                    </div>
+                    <div class="policy">
+                        <p>By selecting the button below, I agree to pay for the books.</p>
+                        <p>I also agree to the <a href="#">updated Terms of Service</a>, <a href="#">Payments Terms of Service</a>, and I acknowledge the <a href="#">Privacy Policy</a>.</p>
+                    </div>
+                    <button type="submit">Confirm Card</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+<script>
+function validateForm() {
+    let isValid = true;
+
+    const fullName = document.getElementById('cardholder-name');
+    const fullNameError = document.getElementById('cardholder-name-error');
+    if (!fullName.value) {
+        fullName.classList.add('input-error');
+        fullNameError.style.display = 'block';
+        isValid = false;
+    } else {
+        fullName.classList.remove('input-error');
+        fullNameError.style.display = 'none';
+    }
+
+    const cardNumber = document.getElementById('card-number');
+    const cardNumberError = document.getElementById('card-number-error');
+    const cardNumberPattern = /^\d{16}$/; // Pattern to match exactly 16 digits
+    if (!cardNumber.value || !cardNumberPattern.test(cardNumber.value)) {
+        cardNumber.classList.add('input-error');
+        cardNumberError.style.display = 'block';
+        isValid = false;
+    } else {
+        cardNumber.classList.remove('input-error');
+        cardNumberError.style.display = 'none';
+    }
+
+    const expireMonth = document.getElementById('expire-month');
+    const expireMonthError = document.getElementById('expire-month-error');
+    const expireMonthPattern = /^(0[1-9]|1[0-2])$/; // Pattern to match valid months from 01 to 12
+    if (!expireMonth.value || !expireMonthPattern.test(expireMonth.value)) {
+        expireMonth.classList.add('input-error');
+        expireMonthError.style.display = 'block';
+        isValid = false;
+    } else {
+        expireMonth.classList.remove('input-error');
+        expireMonthError.style.display = 'none';
+    }
+
+    const expireYear = document.getElementById('expire-year');
+    const expireYearError = document.getElementById('expire-year-error');
+    const expireYearPattern = /^\d{4}$/; // Pattern to match exactly 4 digits
+    if (!expireYear.value || !expireYearPattern.test(expireYear.value)) {
+        expireYear.classList.add('input-error');
+        expireYearError.style.display = 'block';
+        isValid = false;
+    } else {
+        expireYear.classList.remove('input-error');
+        expireYearError.style.display = 'none';
+    }
+
+    const securityCode = document.getElementById('security-code');
+    const securityCodeError = document.getElementById('security-code-error');
+    if (!securityCode.value) {
+        securityCode.classList.add('input-error');
+        securityCodeError.style.display = 'block';
+        isValid = false;
+    } else {
+        securityCode.classList.remove('input-error');
+        securityCodeError.style.display = 'none';
+    }
+
+    if (isValid) {
+        window.location.href = 'CreditCardConfirmation.html';
+    }
+
+    return false;
+}
+</script>
+</html>

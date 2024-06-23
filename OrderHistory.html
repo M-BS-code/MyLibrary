@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        @media (max-width: 600px) {
+            .header-container, .search-bar input, .header-right button, .sidebar a, .sidebar h3, .sidebar .signout a {
+                font-size: 12px; /* Reduce font size for header and sidebar elements */
+            }
+    
+            .main-container h2, .previous-orders, .book-info-header div {
+                font-size: 16px; /* Smaller text for main headings and subheadings */
+            }
+    
+            .book-item img {
+                width: 50px; /* Smaller book cover images */
+                height: 66px; /* Adjusted height to maintain aspect ratio */
+            }
+    
+            .book-details h3, .book-details p {
+                font-size: 8px; /* Smaller text for book titles and details */
+            }
+    
+            .book-info div {
+                font-size: 14px; /* Smaller text for book info like usage, format */
+            }
+    
+            .main-container, .book-item {
+                padding: 10px; /* Reduced padding for container and book items */
+            }
+    
+            .book-item {
+                margin-bottom: 10px; /* Less margin between items */
+            }
+        }
+    </style>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFF4DC;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+
+    .sidebar {
+        display: none;
+        width: 250px;
+        max-height: calc(100vh - 60px);
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 60px;
+        right: 0;
+        transition: right 0.3s;
+        overflow-y: auto;
+    }
+
+    .sidebar.open {}
+
+    .sidebar .avatar {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
+
+    .sidebar h3 {
+        margin: 10px 0 5px 0;
+        font-size: 1.2em;
+    }
+
+    .sidebar p {
+        margin: 0 0 20px 0;
+        color: gray;
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        color: black;
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .sidebar a .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+    .sidebar a:last-child {
+        border-bottom: none;
+    }
+
+    .sidebar .signout {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .sidebar .signout a {
+        padding: 10px 20px;
+        background-color: #f1f1f1;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        color: black;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        margin-left: -60px;
+        margin-right: 40px;
+    }
+
+    .header-right button {
+        margin-left: 20px;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #AD512E;
+    }
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .logo img {
+        height: 50px;
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+
+    .search-bar input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px 0 0 4px;
+    }
+
+    .search-bar button {
+        padding: 8px;
+        background-color: #AD512E;
+        border: 1px solid #AD512E;
+        border-radius: 0 4px 4px 0;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+    }
+
+    .header-right button {
+        margin-left: 20px;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #AD512E;
+    }
+        .logo img {
+            height: 50px;
+        }
+
+   
+        .main-container {
+            max-width: 1200px;
+            margin: 100px auto 20px auto;
+            background-color: #FFF4DC;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .main-container h2 {
+            font-size: 2.5em;
+            color: #3C3C3B;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .main-container hr {
+            width: 300px;
+            height: 3px;
+            background-color: #3C3C3B;
+            border: none;
+            margin: 30px auto; /* Adjusted margin for better spacing */
+            padding: 0; /* Remove any padding if present */
+            border-radius: 5px; /* Add rounded corners if desired */
+        }
+        
+        .previous-orders {
+            font-size: 1.5em;
+            color: #3C3C3B;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .book-info-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-weight: bold;
+            color: #3C3C3B;
+            margin-bottom: 10px;
+        }
+
+        .book-info-header div {
+            flex: 1;
+            text-align: center;
+        }
+
+        .book-item {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-item img {
+            width: 80px;
+            height: 100px;
+            border-radius: 4px;
+            margin-right: 20px;
+        }
+
+        .book-details {
+            flex-grow: 1;
+        }
+
+        .book-details h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.2em;
+        }
+
+        .book-details p {
+            margin: 0 0 5px 0;
+            color: gray;
+        }
+
+        .book-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .book-info div {
+            flex: 1;
+            text-align: center;
+            align-self: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <a href="HomePage.html" class="logo">
+                <img src="images/logo.png" alt="Logo">
+            </a>
+            <div class="search-bar">
+                <input type="text" placeholder="Search">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="header-right">
+                <button class="filter-btn"><i class="fas fa-filter"></i> Filter</button>
+                <button class="account-btn"><i class="fas fa-user"></i> Account</button>
+                <button id="toggleSidebarBtn" class="menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="main-container">
+            <h2>Order History</h2>
+            <hr>
+            <div class="previous-orders">Previous Orders</div>
+            <div class="book-info-header">
+                <div>Title</div>
+                <div>Usage</div>
+                <div>Book Format</div>
+                <div>Penalties</div>
+                <div>Charges</div>
+            </div>
+            <div class="book-item">
+                <img src="images/borrow1.png" alt="Book Cover">
+                <div class="book-details">
+                    <h3>Don't Make Me Think</h3>
+                    <p>Steve Krug, 2000</p>
+                    <p>Second Edition</p>
+                </div>
+                <div class="book-info">
+                    <div>3 Days</div>
+                    <div>Hard Copy</div>
+                    <div>0$</div>
+                    <div>30$</div>
+                </div>
+            </div>
+        </div>
+      
+        <div class="sidebar">
+            <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+            <h3>Kate Russell</h3>
+            <p>Uni Student</p>
+
+            <h4>My profile</h4>
+            <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+            <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+
+            <h4>My library</h4>
+            <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+            <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+            <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+            <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+            <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+
+            <h4>Others</h4>
+            <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+            <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+            <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+
+            <div class="signout">
+                <a href="Login.html"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+            </div>
+        </div>
+    </main>
+    <script>
+        // Get the button and sidebar elements
+        var toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+        var sidebar = document.querySelector('.sidebar');
+        
+        // Add an event listener to the button to toggle the sidebar
+        toggleSidebarBtn.addEventListener('click', function() {
+            if (sidebar.style.display === 'none') {
+                sidebar.style.display = 'block'; /* Show the sidebar */
+            } else {
+                sidebar.style.display = 'none'; /* Hide the sidebar */
+            }
+        });
+            </script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    const sidebar = document.querySelector('.sidebar');
+            
+                    function renderSidebar(role) {
+                        if (role === 'student') {
+                            sidebar.innerHTML = `
+                                <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                                <h3>Kate Russell</h3>
+                                <p>Uni Student</p>
+            
+                                <h4>My profile</h4>
+                                <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                                <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+            
+                                <h4>My library</h4>
+                                <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                                <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                                <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                                <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                                <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+            
+                                <h4>Others</h4>
+                                <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                                <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                                <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+            
+                                <div class="signout">
+                                    <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                                </div>
+                            `;
+                        } else if (role === 'nonstudent') {
+                            sidebar.innerHTML = `
+                                <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                                <h3>Kate Russell</h3>
+                                <p>Non-student</p>
+            
+                                <h4>My profile</h4>
+                                <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                                <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+            
+                                <h4>My library</h4>
+                                <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                                <a href="BorrowingForNon.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                                <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                                <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                                <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+            
+                                <h4>Others</h4>
+                                <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                                <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                                <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+            
+                                <div class="signout">
+                                    <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                                </div>
+                            `;
+                        } else {
+                            sidebar.innerHTML = `
+                                <h3>Welcome to the Library</h3>
+                                <p>Please <a href="Signup.html">sign up</a> or <a href="Login.html">log in</a>.</p>
+                            `;
+                        }
+                    }
+            
+                    if (user) {
+                        renderSidebar(user.role);
+                    }
+            
+                    document.querySelectorAll('.sidebar a').forEach(link => {
+                        link.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            const target = event.target.closest('a').getAttribute('href');
+                            window.location.href = target;
+                        });
+                    });
+                });
+            
+                function logout() {
+                    localStorage.removeItem('user');
+                }
+            </script>
+            
+</body>
+
+</html>

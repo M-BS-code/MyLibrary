@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Schedule</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+ 
+  
+
+ 
+        
+
+ .main-container {
+    max-width: 1200px;
+    margin: 100px auto 20px auto;
+ }
+ @media (max-width: 600px) {
+    .reservations {
+        flex-direction: column; /* Stack reservation items vertically */
+    }
+
+    .reservation {
+        width: 100%; /* Each reservation card takes full width */
+        margin-bottom: 20px; /* Add some space between the cards */
+    }
+}
+
+ @media (max-width: 768px) {
+    .header-container {
+        padding: 10px;
+    }
+    
+    .sidebar {
+        width: 80%;
+        max-width: 300px;
+    }
+    
+    .main-container {
+        margin: 60px auto 20px auto; /* Adjust for smaller screens */
+    }
+    
+    .section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .meeting-room {
+        flex-basis: 65%; /* Take up 65% of the container width */
+    }
+    
+    .facilities {
+        flex-basis: 30%; /* Take up 30% of the container width */
+    }
+    
+    @media (max-width: 768px) {
+        .meeting-room,
+        .facilities {
+            flex-basis: 100%; /* Each takes up full width on smaller screens */
+        }
+        }
+    
+ }
+
+ @media (max-width: 480px) {
+    .facility {
+        width: 100%; /* Full width on extra small screens */
+    }
+    
+ }
+ 
+ 
+ .events-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.event-item {
+    width: calc(50% - 20px); /* Adjust the width as needed */
+    margin: 10px; /* Adjust margin between items */
+    background-color: #f0f0f0; /* Example background color */
+    padding: 15px; /* Example padding for each event item */
+    box-sizing: border-box; /* Ensure padding and border are included in width calculation */
+ }
+
+
+
+
+ 
+
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFF4DC;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo img {
+            height: 50px;
+        }
+
+        .sidebar {
+            display: none;
+            width: 250px;
+            max-height: calc(100vh - 60px);
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 60px;
+            right: 0;
+            transition: right 0.3s;
+            overflow-y: auto;
+        }
+    
+        .sidebar.open {}
+    
+        .sidebar .avatar {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+    
+        .sidebar h3 {
+            margin: 10px 0 5px 0;
+            font-size: 1.2em;
+        }
+    
+        .sidebar p {
+            margin: 0 0 20px 0;
+            color: gray;
+        }
+    
+        .sidebar a {
+            text-decoration: none;
+            color: black;
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+    
+        .sidebar a .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    
+        .sidebar a:last-child {
+            border-bottom: none;
+        }
+    
+        .sidebar .signout {
+            text-align: center;
+            margin-top: 20px;
+        }
+    
+        .sidebar .signout a {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            color: black;
+        }
+    
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: -60px;
+            margin-right: 40px;
+        }
+    
+        .header-right button {
+            margin-left: 20px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #AD512E;
+        }
+    
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 100px auto 20px auto;
+            background-color: #FFF4DC;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .main-container h2 {
+            font-size: 2.5em;
+            color: #3C3C3B;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .main-container hr {
+            width: 350px;
+            height: 3px;
+            background-color: #3C3C3B;
+            border: none;
+            margin: 10px auto;
+        }
+        
+        .section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        
+        .meeting-room {
+            width: 65%;
+        }
+        
+     
+        .facilities {
+            width: 30%;
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 50px;
+            gap: 10px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .facilities h3 {
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            color: #3C3C3B;
+        }
+        
+        .facility {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .facility i {
+            color: #AD512E;
+        }
+        
+        .description {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        
+        .pagination a {
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: #3C3C3B;
+        }
+        
+        .my-reservations {
+            margin-bottom: 40px;
+        }
+        
+        .my-reservations h3 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        
+        .reservations {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .reservation {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 90%;
+        }
+        
+        .reservation h4 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .time-schedule {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .calendar {
+            width: 65%;
+        }
+        
+        .calendar iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .upcoming-events {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .event {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+  
+
+        .sidebar {
+            display: none;
+            width: 250px;
+            max-height: calc(100vh - 60px);
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 60px;
+            right: 0;
+            transition: right 0.3s;
+            overflow-y: auto;
+        }
+    
+        .sidebar.open {}
+    
+        .sidebar .avatar {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+    
+        .sidebar h3 {
+            margin: 10px 0 5px 0;
+            font-size: 1.2em;
+        }
+    
+        .sidebar p {
+            margin: 0 0 20px 0;
+            color: gray;
+        }
+    
+        .sidebar a {
+            text-decoration: none;
+            color: black;
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+    
+        .sidebar a .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    
+        .sidebar a:last-child {
+            border-bottom: none;
+        }
+    
+        .sidebar .signout {
+            text-align: center;
+            margin-top: 20px;
+        }
+    
+        .sidebar .signout a {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            color: black;
+        }
+    
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: -60px;
+            margin-right: 40px;
+        }
+    
+        .header-right button {
+            margin-left: 20px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #AD512E;
+        }
+    
+        .header-container {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+    
+        .logo img {
+            height: 50px;
+        }
+    
+        .search-bar {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            margin-left: 40px;
+            margin-right: 40px;
+        }
+    
+        .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+        }
+    
+        .search-bar button {
+            padding: 8px;
+            background-color: #AD512E;
+            border: 1px solid #AD512E;
+            border-radius: 0 4px 4px 0;
+            color: #fff;
+            cursor: pointer;
+        }
+    
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+    
+        .header-right button {
+            margin-left: 20px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #AD512E;
+        }
+            .logo img {
+                height: 50px;
+            }
+    /* Modal CSS */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.slider {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 300px;
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slides img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.slider-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+}
+
+.slider-nav button {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+}
+ 
+@keyframes rotateIn {
+    from {
+        transform: rotate(-5deg);
+        opacity: 0;
+    }
+    to {
+        transform: rotate(0);
+        opacity: 1;
+    }
+}
+
+.animated {
+    animation: rotateIn 1s ease-in-out forwards;
+}
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <a href="HomePage.html" class="logo">
+                <img src="images/logo.png" alt="Logo">
+            </a>
+
+            
+            <div class="search-bar">
+                <input type="text" placeholder="Search">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="header-right">
+                <button class="filter-btn"><i class="fas fa-filter"></i> Filter</button>
+                <button class="account-btn"><i class="fas fa-user"></i> Account</button>
+                <button id="toggleSidebarBtn" class="menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="main-container">
+            <h2>Meeting Schedule</h2>
+            <hr>
+
+            <div class="section">
+                <div class="meeting-room">
+                    <h3>Meeting Room</h3>
+                    <div class="slider">
+                        <div class="slides">
+                            <img src="images/image1.jpg" alt="Meeting Room">
+                            <img src="images/image2.jpg" alt="Meeting Room">
+                            <img src="images/image3.jpg" alt="Meeting Room">
+                            <img src="images/image4.jpg" alt="Meeting Room">
+                        </div>
+                        <div class="slider-nav">
+                            <button class="prev"><i class="fas fa-chevron-left"></i></button>
+                            <button class="next"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="facilities">
+                    <h3>Facilities</h3>
+                    <div class="facility"><i class="fas fa-tv"></i> Monitor</div>
+                    <div class="facility"><i class="fas fa-chalkboard"></i> Board</div>
+                    <div class="facility"><i class="fas fa-wifi"></i> WiFi</div>
+                    <div class="facility"><i class="fas fa-thermometer-half"></i> Heating</div>
+                    <div class="facility"><i class="fas fa-table"></i> Table</div>
+                    <div class="facility"><i class="fas fa-snowflake"></i> Air Conditioner</div>
+                </div>
+            </div>
+            <div class="description">
+                <button>Show more ↓</button>
+                <p><strong>Description</strong></p>
+                <p>The meeting room is a modern and stylish space, designed with a sleek, minimal aesthetic. It features a long, wooden conference table surrounded by white chairs, accommodating several people for meetings or collaborative work. The room is equipped with modern facilities, including a monitor for presentations, a whiteboard for brainstorming, and other amenities such as Wi-Fi, heating, and air conditioning to ensure comfort and connectivity. The subdued lighting and the dark ceiling add a contemporary touch, making it an ideal setting for professional gatherings and discussions.</p>
+            </div>
+            <div class="pagination">
+                <a href="#">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">...</a>
+                <a href="#">10</a>
+            </div>
+
+
+            <div class="my-reservations">
+                <h3>My Reservations</h3>
+                <div class="reservations">
+                    <div class="reservation">
+                        <h4>Meeting Room</h4>
+                        <p>8:30 PM - 9:30 PM</p>
+                        <p>Collaborative session with the international team in Tokyo. The application has factored in the time zone differences to ensure a smooth meeting experience.</p>
+                        <p>📅 Sunday</p>
+                        <p>📍 Location: Main Office, Room 402</p>
+                        <p>👥 Attendees: John Doe, Jane Smith, and Tokyo Team</p>
+                    </div>
+                    <div class="reservation">
+                        <h4>Meeting Room</h4>
+                        <p>3:00 PM - 4:30 PM</p>
+                        <p>A discussion on business development strategies with the team. The app has seamlessly adjusted the schedule for all members.</p>
+                        <p>📅 Monday</p>
+                        <p>📍 Location: Main Office, Room 305</p>
+                        <p>👥 Attendees: Marketing Team, Sales Team</p>
+                    </div>
+                    <div class="reservation">
+                        <h4>Study Room</h4>
+                        <p>11:30 AM - 12:30 PM</p>
+                        <p>Studying for human-computer interaction with colleagues.</p>
+                        <p>📅 Thursday</p>
+                        <p>📍 Location: Library, Room 101</p>
+                        <p>👥 Attendees: HCI Study Group</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="time-schedule animated">
+                <div class="calendar">
+                    <h3>Schedule</h3>
+                    <iframe src="https://calendar.google.com/calendar/embed?src=c_920fadcfcebf8950ca3067c7cb4b1b3dca4f09e2cdb94e5454b9a39869f873fa%40group.calendar.google.com&ctz=Asia%2FDubai"></iframe>
+                </div>
+                <div class="upcoming-events">
+                    <h3>Time Schedule</h3>
+            
+                    <div class="event">
+                        <h4>Meeting Room</h4>
+                        <p>14-5-2024</p>
+                        <p>8:30 PM - 9:30 PM</p>
+                    </div>
+                    <div class="event">
+                        <h4>Meeting Room</h4>
+                        <p>15-5-2024</p>
+                        <p>3:00 PM - 4:30 PM</p>
+                    </div>
+                    <div class="event">
+                        <h4>Study Room</h4>
+                        <p>18-5-2024</p>
+                        <p>11:30 AM - 12:30 PM</p>
+                    </div>
+                </div>
+            </div>
+            
+
+           
+          
+     <!-- Meeting Details Modal -->
+<div id="meetingDetailsModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Meeting Details</h2>
+        <p id="meetingDetails"></p>
+    </div>
+</div>
+
+        <div class="sidebar">
+            <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+            <h3>Kate Russell</h3>
+            <p>Uni Student</p>
+
+            <h4>My profile</h4>
+            <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+            <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+
+            <h4>My library</h4>
+            <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+            <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+            <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+            <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+            <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+
+            <h4>Others</h4>
+            <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+            <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+            <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+
+            <div class="signout">
+                <a href="Login.html"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+            </div>
+        </div>
+
+    </main>
+    <script>
+        // Get the button and sidebar elements
+        var toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+        var sidebar = document.querySelector('.sidebar');
+            // Add an event listener to the button to toggle the sidebar
+    toggleSidebarBtn.addEventListener('click', function () {
+        sidebar.classList.toggle('open'); // Toggle the 'open' class instead of manipulating style directly
+    });
+
+    
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+        var sidebar = document.querySelector('.sidebar');
+    
+        // Toggle the sidebar visibility
+        toggleSidebarBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+        });
+    });
+    
+
+
+
+        // Add an event listener to the button to toggle the sidebar
+        toggleSidebarBtn.addEventListener('click', function () {
+            if (sidebar.style.display === 'none') {
+                sidebar.style.display = 'block';
+            } else {
+                sidebar.style.display = 'none';
+            }
+        });
+
+        // JavaScript for slider
+        const prevBtn = document.querySelector('.prev');
+        const nextBtn = document.querySelector('.next');
+        const slides = document.querySelector('.slides');
+        let currentIndex = 0;
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < slides.children.length - 1) {
+                currentIndex++;
+                slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+        });
+
+        // Toggle Description Visibility
+const descriptionButton = document.querySelector('.description button');
+const descriptionText = document.querySelector('.description p:nth-of-type(2)');
+
+descriptionButton.addEventListener('click', () => {
+    if (descriptionText.style.display === 'none' || descriptionText.style.display === '') {
+        descriptionText.style.display = 'block';
+        descriptionButton.textContent = 'Show less ↑';
+    } else {
+        descriptionText.style.display = 'none';
+        descriptionButton.textContent = 'Show more ↓';
+    }
+});
+// Handle Meeting Details Modal
+const reservations = document.querySelectorAll('.reservation');
+const modal = document.getElementById('meetingDetailsModal');
+const modalContent = document.getElementById('meetingDetails');
+const closeBtn = document.querySelector('.close');
+
+reservations.forEach(reservation => {
+    reservation.addEventListener('click', () => {
+        modalContent.textContent = reservation.textContent;
+        modal.style.display = 'block';
+    });
+});
+
+closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+});
+
+
+
+
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const sidebar = document.querySelector('.sidebar');
+    
+            function renderSidebar(role) {
+                if (role === 'student') {
+                    sidebar.innerHTML = `
+                        <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                        <h3>Kate Russell</h3>
+                        <p>Uni Student</p>
+    
+                        <h4>My profile</h4>
+                        <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                        <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+    
+                        <h4>My library</h4>
+                        <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                        <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                        <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                        <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                        <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+    
+                        <h4>Others</h4>
+                        <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                        <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                        <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+    
+                        <div class="signout">
+                            <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                        </div>
+                    `;
+                } else if (role === 'nonstudent') {
+                    sidebar.innerHTML = `
+                        <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                        <h3>Kate Russell</h3>
+                        <p>Non-student</p>
+    
+                        <h4>My profile</h4>
+                        <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                        <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+    
+                        <h4>My library</h4>
+                        <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                        <a href="BorrowingForNon.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                        <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                        <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                        <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+    
+                        <h4>Others</h4>
+                        <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                        <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                        <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+    
+                        <div class="signout">
+                            <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                        </div>
+                    `;
+                } else {
+                    sidebar.innerHTML = `
+                        <h3>Welcome to the Library</h3>
+                        <p>Please <a href="Signup.html">sign up</a> or <a href="Login.html">log in</a>.</p>
+                    `;
+                }
+            }
+    
+            if (user) {
+                renderSidebar(user.role);
+            }
+    
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const target = event.target.closest('a').getAttribute('href');
+                    window.location.href = target;
+                });
+            });
+        });
+    
+        function logout() {
+            localStorage.removeItem('user');
+        }
+        
+    </script>
+    
+</body>
+
+</html>

@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librarian Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+          body {
+            font-family: 'Arial', sans-serif;
+            background-color: #FFF5DD; /* Beige background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .header-container {
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 98%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo img {
+            width: 50px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #AD512E;
+            padding: 10px;
+            border-radius: 20px;
+            width: 50%;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            color: white;
+            flex-grow: 1;
+            padding: 5px;
+        }
+
+        .search-bar button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right .account-btn {
+            background-color: #FFF5DD;
+            color: #5C4033;
+            border: 2px solid #D19B72;
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .header-right .account-btn i {
+            margin-right: 5px;
+        }
+
+        .content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+            margin-top: 80px; /* Adjusted for header height */
+        }
+
+        .sidebar {
+            background-color: #AD512E;
+            padding: 20px;
+            width: 200px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .sidebar h3 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .sidebar button {
+            display: block;
+            background-color: #5C4033;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .main-content {
+            padding: 20px;
+            flex-grow: 1;
+            overflow: auto;
+        }
+
+        .main-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .main-content table th,
+        .main-content table td {
+            border: 1px solid #D19B72;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .main-content table th {
+            background-color: #F7EAD9;
+            color: #5C4033;
+        }
+
+        /* Main content layout adjustments */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Aligns children (stats and buttons) to the right */
+    padding: 20px;
+    flex-grow: 1;
+    overflow: auto;
+}
+
+/* Stats styling */
+.stats {
+    display: flex;
+    justify-content: space-between; /* Ensures maximum space between each box */
+    padding: 20px; /* More padding around the stats area */
+    background-color: #F7EAD9; /* Optional: Adds a background color to the stats area */
+    border-radius: 10px; /* Rounded corners for the stats area */
+    margin: 20px; /* Adds more space around the stat area */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Optional: Adds shadow for depth */
+}
+
+.stat {
+    flex: 1; /* Allows each box to take equal space */
+    margin: 0 10px; /* Adds horizontal space between the stat boxes */
+    padding: 20px; /* Larger padding inside each stat box */
+    background: #FFFFFF; /* White background for each stat box */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Shadow for each stat box */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-bar {
+    width: 100%; /* Full width of the stat box */
+    background-color: #e0e0e0; /* Light grey background for the progress bar */
+    border-radius: 5px; /* Rounded corners for the progress bar */
+    margin-top: 10px; /* Space above the progress bar */
+    height: 15px; /* Increased height for visibility */
+}
+
+.progress {
+    height: 100%;
+    border-radius: 5px; /* Ensures the fill also has rounded corners */
+    background-color: #5C4033; /* Dark brown color for the progress fill */
+}
+
+
+.actions {
+    display: flex;
+    justify-content: flex-start; /* Align buttons to the left */
+    gap: 10px; /* Space between buttons */
+    margin-left: 220px; /* Adjust this value to align with sidebar end */
+    margin-top: 10px; /* Optional: adds some space above the buttons */
+}
+
+
+.actions button {
+    background-color: #D19B72;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+
+/* Additional styles for the Current Users stat */
+.current-users {
+    display: flex;
+    align-items: center;
+    font-size: 16px; /* Adjust the font size as necessary */
+    gap: 10px; /* Space between icon and text */
+}
+
+.current-users-icon {
+    background-color: #2E86C1; /* Example color */
+    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white; /* Icon color */
+    font-size: 20px; /* Icon size */
+}
+
+.current-users-number {
+    position: relative; /* For any potential pseudo-elements or additional styling */
+    font-weight: bold;
+    color: #333; /* Text color */
+}
+
+/* Adjusting button styles */
+.action-button {
+    background-color: #D19B72;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px; /* Smaller buttons */
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 5px; /* Space between buttons */
+    margin-top: 10px; /* Space above the buttons */
+}
+
+
+/* Additional style for responsiveness */
+@media (max-width: 768px) {
+    .main-content .stats {
+        flex-direction: column;
+    }
+
+    .main-content .stats .stat:not(:last-child) {
+        margin-right: 0;
+        margin-bottom: 10px; /* Space between stats on small screens */
+    }
+}
+
+
+        @media (max-width: 768px) {
+            .search-bar {
+                width: 70%;
+            }
+
+            .header-right .account-btn span {
+                display: none;
+            }
+
+            .header-right .account-btn i {
+                margin: 0;
+            }
+        }
+
+        /* Sidebar form styles */
+        .form-sidebar {
+            position: fixed;
+            top: 80px;
+            right: -100%;
+            width: 400px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: right 0.3s;
+        }
+
+        .form-sidebar.open {
+            right: 0;
+        }
+
+        .form-sidebar h2 {
+            margin-top: 0;
+            color: #5C4033;
+        }
+
+        .form-sidebar .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-sidebar .form-group label {
+            display: block;
+            color: #5C4033;
+            margin-bottom: 5px;
+        }
+
+        .form-sidebar .form-group input,
+        .form-sidebar .form-group select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #D19B72;
+            border-radius: 5px;
+        }
+
+        .form-sidebar .actions {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 10px;
+        }
+
+        .form-sidebar .actions button {
+            background-color: #D19B72;
+            color: white;
+            border: none;
+            padding: 20px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .view-sidebar {
+    position: fixed;
+    top: 80px;
+    right: -100%;
+    width: 400px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: right 0.3s;
+    border: 1px solid #D19B72; /* Add border to the sidebar */
+}
+
+.view-sidebar.open {
+    right: 0;
+}
+
+.view-sidebar h2 {
+    margin-top: 0;
+    color: #5C4033;
+    border-bottom: 1px solid #D19B72; /* Border below title */
+    padding-bottom: 10px;
+}
+
+.view-sidebar .form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.view-sidebar .form-group label {
+    display: block;
+    color: #5C4033;
+    font-weight: bold;
+    padding: 5px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    background-color: #ffffff; /* Beige background for the label */
+}
+
+.view-sidebar .form-group span {
+    display: block;
+    background-color: #F7EAD9;
+    color: #5C4033;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border: 1px solid #D19B72;
+    border-radius: 5px;
+}
+
+.view-sidebar .actions {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+}
+
+.view-sidebar .actions button {
+    background-color: #D19B72;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.Edit-view-sidebar {
+    position: fixed;
+    right: 0;
+    top: 80px; /* Adjust based on your header's height */
+    width: 300px; /* Adjust width as necessary */
+    height: 100vh;
+    background: #FFF5DD;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.Edit-view-sidebar.open {
+    transform: translateX(0);
+}
+
+.Edit-view-sidebar {
+    position: fixed;
+    right: 0;
+    top: 80px;
+    width: 300px;
+    height: 100vh;
+    background: #FFF5DD; /* Beige background */
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #D19B72;
+}
+
+.Edit-view-sidebar h2 {
+    color: #5C4033;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.Edit-view-sidebar .form-group {
+    margin-bottom: 15px;
+}
+
+.Edit-view-sidebar .form-group label {
+    font-size: 16px;
+    color: #5C4033;
+    margin-bottom: 5px;
+}
+
+.Edit-view-sidebar .form-group input,
+.Edit-view-sidebar .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #D19B72;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.Edit-view-sidebar .actions button {
+    background-color: #D19B72;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px; /* Space above the button */
+}
+
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="Images/Logo.png" alt="NOVEL NOOK">
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search Librarian" id="search-input" onkeyup="searchLibrarians()">
+                <button type="submit" onclick="searchLibrarians()"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="header-right">
+                <button class="account-btn" href="Signup.html"><i class="fas fa-user"></i>ACCOUNT</button>
+            </div>
+        </div>
+    </header>
+    <div class="content">
+        <div class="sidebar">
+            <h3>Recruitment Progress</h3>
+            <button onclick="toggleFormSidebar()">Add Librarian</button>
+            <button id="edit-button" onclick="getSelectedLibrarian()">Edit Librarian</button>
+
+            <button onclick="deleteLibrarian()">Delete Librarian</button>
+        </div>
+        <div class="main-content">
+            <table id="librarian-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>User-ID</th>
+                        <th>User Monitoring</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox"> Omar</td>
+                        <td>#1234</td>
+                        <td>
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-qrcode"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"> Ahmad</td>
+                        <td>#1235</td>
+                        <td>
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-qrcode"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"> Sara</td>
+                        <td>#1236</td>
+                        <td>
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-qrcode"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"> Hamad</td>
+                        <td>#1237</td>
+                        <td>
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-qrcode"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"> Jennifer</td>
+                        <td>#1238</td>
+                        <td>
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-qrcode"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"> David</td>
+                        <td>#1239</td>
+                        <td>
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-qrcode"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"> Sam</td>
+                        <td>#1230</td>
+                        <td>
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-qrcode"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"> Katlin</td>
+                        <td>#2244</td>
+                        <td>
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-qrcode"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox"> Colin</td>
+                        <td>#2343</td>
+                        <td>
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-qrcode"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="main-content">
+                <!-- Previous content here -->
+                <div class="stats">
+                    <div class="stat">
+                        <h3>New Users</h3>
+                        <p>75%</p>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 75%;"></div> <!-- Inline style for demo -->
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <h3>Current Users</h3>
+                        <p>9</p>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 45%;"></div> <!-- Adjust width based on data -->
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        
+    </div>
+
+    <div class="form-sidebar" id="form-sidebar">
+        <h2>Add Librarian</h2>
+        <div class="form-group">
+            <label for="first-name">First Name</label>
+            <input type="text" id="first-name">
+        </div>
+        <div class="form-group">
+            <label for="last-name">Last Name</label>
+            <input type="text" id="last-name">
+        </div>
+        <div class="form-group">
+            <label for="phone-number">Phone Number</label>
+            <input type="text" id="phone-number">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email">
+        </div>
+        <div class="form-group">
+            <label for="country">Country</label>
+            <select id="country" onchange="updateCities(this.value)">
+                <option value="usa">USA</option>
+                <option value="uae">UAE</option>
+                <option value="uk">UK</option>
+                <option value="canada">Canada</option>
+                <option value="australia">Australia</option>
+                <option value="india">India</option>
+                <option value="germany">Germany</option>
+                <option value="france">France</option>
+                <option value="italy">Italy</option>
+                <option value="japan">Japan</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <select id="city"></select>
+        </div>
+        <div class="form-group">
+            <label for="user-id">User ID</label>
+            <input type="text" id="user-id">
+        </div>
+        <div class="actions">
+            <button onclick="saveLibrarian()">Save</button>
+            <button onclick="toggleFormSidebar()">Cancel</button>
+        </div>
+    </div>
+
+    <div class="view-sidebar" id="view-sidebar">
+        <h2>Librarian Details</h2>
+        <div class="form-group">
+            <label>Name:</label>
+            <span id="view-name"></span>
+        </div>
+        <div class="form-group">
+            <label>User ID:</label>
+            <span id="view-user-id"></span>
+        </div>
+        <div class="form-group">
+            <label>Email:</label>
+            <span id="view-email"></span>
+        </div>
+        <div class="form-group">
+            <label>Phone:</label>
+            <span id="view-phone"></span>
+        </div>
+        <div class="form-group">
+            <label>Country:</label>
+            <span id="view-country"></span>
+        </div>
+        <div class="form-group">
+            <label>City:</label>
+            <span id="view-city"></span>
+        </div>
+        <div class="actions">
+            <button onclick="toggleViewSidebar()">Close</button>
+        </div>
+    </div>
+    
+    <div class="Edit-view-sidebar" id="edit-sidebar">
+        <h2>Edit Librarian Details</h2>
+        <form id="edit-librarian-form">
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="edit-name">
+            </div>
+            <div class="form-group">
+                <label>User ID:</label>
+                <input type="text" id="edit-user-id" disabled> <!-- User ID should not be editable -->
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="edit-email">
+            </div>
+            <div class="form-group">
+                <label>Phone:</label>
+                <input type="text" id="edit-phone">
+            </div>
+            <div class="form-group">
+                <label>Country:</label>
+                <input type="text" id="edit-country">
+            </div>
+            <div class="form-group">
+                <label>City:</label>
+                <input type="text" id="edit-city">
+            </div>
+            <div class="actions">
+                <button type="button" onclick="saveChanges()">Save Changes</button>
+                <button type="button" onclick="toggleEditSidebar()">Cancel</button>
+            </div>
+        </form>
+    </div>
+    
+    
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    updateCities(document.getElementById('country').value);
+    loadAcceptedLibrarians();
+    filterAcceptedLibrarians();
+});
+
+function loadAcceptedLibrarians() {
+    const acceptedLibrarians = JSON.parse(localStorage.getItem('acceptedLibrarians')) || [];
+    const table = document.getElementById('librarian-table').getElementsByTagName('tbody')[0];
+
+    acceptedLibrarians.forEach(librarian => {
+        const newRow = table.insertRow();
+        newRow.dataset.email = librarian.email;
+        newRow.dataset.phone = '';
+        newRow.dataset.country = '';
+        newRow.dataset.city = '';
+
+        const nameCell = newRow.insertCell(0);
+        const idCell = newRow.insertCell(1);
+        const monitoringCell = newRow.insertCell(2);
+
+        nameCell.innerHTML = `<input type="checkbox"> ${librarian.name}`;
+        idCell.textContent = `#${Math.floor(Math.random() * 10000)}`;
+        monitoringCell.innerHTML = `<i class="fas fa-eye"></i> <i class="fas fa-edit"></i> <i class="fas fa-qrcode"></i>`;
+    });
+}
+
+
+
+function toggleFormSidebar() {
+    const formSidebar = document.getElementById('form-sidebar');
+    formSidebar.classList.toggle('open');
+}
+
+function updateCities(countryCode) {
+    const citySelect = document.getElementById('city');
+    citySelect.innerHTML = ''; // Clear existing options
+    const citiesByCountry = {
+        'usa': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose'],
+        'uae': ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al-Khaimah', 'Al Ain', 'Fujairah', 'Umm Al Quwain'],
+        'uk': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Edinburgh', 'Bristol', 'Glasgow', 'Leeds', 'Sheffield'],
+        'canada': ['Toronto', 'Montreal', 'Vancouver', 'Calgary', 'Edmonton', 'Ottawa', 'Winnipeg', 'Quebec City', 'Hamilton', 'Kitchener'],
+        'australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast', 'Canberra', 'Newcastle', 'Wollongong', 'Hobart'],
+        'india': ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Ahmedabad', 'Chennai', 'Kolkata', 'Surat', 'Pune', 'Jaipur'],
+        'germany': ['Berlin', 'Munich', 'Frankfurt', 'Hamburg', 'Cologne', 'Stuttgart', 'Düsseldorf', 'Dortmund', 'Essen', 'Leipzig'],
+        'france': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier', 'Bordeaux', 'Lille'],
+        'italy': ['Rome', 'Milan', 'Naples', 'Turin', 'Palermo', 'Genoa', 'Bologna', 'Florence', 'Catania', 'Venice'],
+        'japan': ['Tokyo', 'Osaka', 'Nagoya', 'Sapporo', 'Fukuoka', 'Kobe', 'Kyoto', 'Kawasaki', 'Saitama', 'Hiroshima']
+    };
+
+    citiesByCountry[countryCode]?.forEach(city => {
+        citySelect.appendChild(new Option(city, city.toLowerCase().replace(/ /g, '-')));
+    });
+}
+
+function searchLibrarians() {
+    const input = document.getElementById('search-input');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('librarian-table');
+    const tr = table.getElementsByTagName('tr');
+
+    Array.from(tr).forEach(row => {
+        const td = row.getElementsByTagName('td')[0];
+        if (td) {
+            const textValue = td.textContent || td.innerText;
+            row.style.display = textValue.toLowerCase().indexOf(filter) > -1 ? '' : 'none';
+        }
+    });
+}
+
+function saveLibrarian() {
+    const firstName = document.getElementById('first-name').value.trim();
+    const lastName = document.getElementById('last-name').value.trim();
+    const userId = document.getElementById('user-id').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone-number').value.trim();
+    const country = document.getElementById('country').value;
+    const city = document.getElementById('city').value;
+
+    if (firstName && lastName && userId && email && phone) {
+        const table = document.getElementById('librarian-table').getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+        newRow.dataset.email = email;
+        newRow.dataset.phone = phone;
+        newRow.dataset.country = country;
+        newRow.dataset.city = city;
+
+        const nameCell = newRow.insertCell(0);
+        const idCell = newRow.insertCell(1);
+        const monitoringCell = newRow.insertCell(2);
+
+        nameCell.innerHTML = `<input type="checkbox"> ${firstName} ${lastName}`;
+        idCell.textContent = `#${userId}`;
+        monitoringCell.innerHTML = `<i class="fas fa-eye"></i> <i class="fas fa-edit"></i> <i class="fas fa-qrcode"></i>`;
+
+        toggleFormSidebar(); // Assuming this closes the sidebar
+    } else {
+        alert('Please fill in all required fields.');
+    }
+}
+
+function deleteLibrarian() {
+    const checkboxes = document.querySelectorAll('#librarian-table tbody input[type="checkbox"]:checked');
+    let acceptedLibrarians = JSON.parse(localStorage.getItem('acceptedLibrarians')) || [];
+
+    if (checkboxes.length === 0) {
+        alert('Please select a librarian to delete.');
+        return;
+    }
+
+    if (confirm('Are you sure you want to delete the selected librarian(s)?')) {
+        checkboxes.forEach(checkbox => {
+            const row = checkbox.closest('tr');
+            const name = row.cells[0].innerText.split(' ').slice(1).join(' ').trim(); // Extract the name after the checkbox
+
+            // Remove the row from the table
+            row.remove();
+
+            // Remove from acceptedLibrarians if present
+            const index = acceptedLibrarians.findIndex(librarian => librarian.name === name);
+            if (index > -1) {
+                acceptedLibrarians.splice(index, 1);
+            }
+        });
+
+        // Update localStorage with the modified acceptedLibrarians array
+        localStorage.setItem('acceptedLibrarians', JSON.stringify(acceptedLibrarians));
+    }
+}
+
+
+function populateSidebarForView(row) {
+    // Extract the text content from the first cell, remove the checkbox text, and trim any extra spaces
+    const fullName = row.cells[0].innerText.split(' ').slice(1).join(' ').trim();
+    let email, phone, country, city;
+
+    console.log("Extracted Name: ", fullName); // Debugging to ensure name is extracted correctly
+
+    switch (fullName) {
+        case 'Omar':
+            email = 'omar@example.com';
+            phone = '+1234567890';
+            country = 'USA';
+            city = 'New York';
+            break;
+        case 'Ahmad':
+            email = 'ahmad@gmail.com';
+            phone = '+971502321111';
+            country = 'UAE';
+            city = 'Dubai';
+            break;
+        case 'Sara':
+            email = 'sara@example.com';
+            phone = '+1234567890';
+            country = 'USA';
+            city = 'Los Angeles';
+            break;
+        case 'Hamad':
+            email = 'hamad@example.com';
+            phone = '+1234567890';
+            country = 'USA';
+            city = 'Chicago';
+            break;
+        case 'Jennifer':
+            email = 'jennifer@example.com';
+            phone = '+1234567890';
+            country = 'USA';
+            city = 'Houston';
+            break;
+        case 'David':
+            email = 'david@example.com';
+            phone = '+1234567890';
+            country = 'USA';
+            city = 'Phoenix';
+            break;
+        case 'Sam':
+            email = 'sam@example.com';
+            phone = '+1234567890';
+            country = 'USA';
+            city = 'Philadelphia';
+            break;
+        case 'Katlin':
+            email = 'katlin@example.com';
+            phone = '+1234567890';
+            country = 'USA';
+            city = 'San Antonio';
+            break;
+        case 'Colin':
+            email = 'colin@gmail.com';
+            phone = '+97150878763';
+            country = 'Canada';
+            city = 'Toronto';
+            break;
+        default:
+            email = 'example@example.com';
+            phone = '+1234567890';
+            country = 'Unknown';
+            city = 'Unknown';
+            break;
+    }
+
+    // Update the view sidebar with the details
+    document.getElementById('view-name').textContent = fullName;
+    document.getElementById('view-user-id').textContent = row.cells[1].textContent.trim();
+    document.getElementById('view-email').textContent = email;
+    document.getElementById('view-phone').textContent = phone;
+    document.getElementById('view-country').textContent = country;
+    document.getElementById('view-city').textContent = city;
+
+    toggleViewSidebar();
+}
+
+// Function to toggle the view sidebar
+function toggleViewSidebar() {
+    const viewSidebar = document.getElementById('view-sidebar');
+    viewSidebar.classList.toggle('open');
+}
+
+// Ensure event listener is properly attached and targeting the right elements
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('fa-eye')) {
+        const row = event.target.closest('tr');
+        console.log("Click detected on row: ", row); // Debugging to ensure the row is correctly identified
+        populateSidebarForView(row);
+    }
+});
+
+function toggleEditSidebar(open) {
+    const sidebar = document.getElementById('edit-sidebar');
+    if (open) {
+        sidebar.classList.add('open');
+    } else {
+        sidebar.classList.remove('open');
+    }
+}
+
+function populateEditSidebar(row) {
+    // Extract details directly from the data attributes and cell content
+    const name = row.cells[0].textContent.trim().split(' ').slice(1).join(' ');  // Correctly splitting and trimming the name
+    const userID = row.cells[1].textContent.trim();
+    const email = row.dataset.email;
+    const phone = row.dataset.phone;
+    const country = row.dataset.country;
+    const city = row.dataset.city;
+
+    // Setting values in the edit form inputs
+    document.getElementById('edit-name').value = name;
+    document.getElementById('edit-user-id').value = userID; // This remains uneditable
+    document.getElementById('edit-email').value = email;
+    document.getElementById('edit-phone').value = phone;
+    document.getElementById('edit-country').value = country;
+    document.getElementById('edit-city').value = city;
+
+    toggleEditSidebar(true); // Open the edit sidebar with populated data
+}
+
+function getSelectedLibrarian() {
+    const selectedCheckbox = document.querySelector('#librarian-table input[type="checkbox"]:checked');
+    if (selectedCheckbox) {
+        const row = selectedCheckbox.closest('tr');
+        populateEditSidebar(row);
+    } else {
+        alert("Please select exactly one librarian to edit.");
+    }
+}
+
+function saveChanges() {
+    const name = document.getElementById('edit-name').value;
+    const userID = document.getElementById('edit-user-id').value;
+    const email = document.getElementById('edit-email').value;
+    const phone = document.getElementById('edit-phone').value;
+    const country = document.getElementById('edit-country').value;
+    const city = document.getElementById('edit-city').value;
+
+    // Locate the row in the table and update its content
+    const rows = document.querySelectorAll('#librarian-table tbody tr');
+    rows.forEach(row => {
+        if (row.cells[1].textContent.trim() === userID) {
+            row.cells[0].innerHTML = `<input type="checkbox"> ${name}`;
+            row.dataset.email = email;
+            row.dataset.phone = phone;
+            row.dataset.country = country;
+            row.dataset.city = city;
+
+            // Update view sidebar if it's open and displaying this librarian's info
+            if (document.getElementById('view-user-id').textContent.trim() === userID) {
+                document.getElementById('view-name').textContent = name;
+                document.getElementById('view-email').textContent = email;
+                document.getElementById('view-phone').textContent = phone;
+                document.getElementById('view-country').textContent = country;
+                document.getElementById('view-city').textContent = city;
+            }
+        }
+    });
+
+    toggleEditSidebar(false); // Close the edit sidebar after saving
+}
+
+function updateLibrarianDetailsView(name, email, phone, country, city) {
+    document.getElementById('view-name').textContent = name;
+    document.getElementById('view-email').textContent = email;
+    document.getElementById('view-phone').textContent = phone;
+    document.getElementById('view-country').textContent = country;
+    document.getElementById('view-city').textContent = city;
+}
+
+function getSelectedLibrarian() {
+    const checkboxes = document.querySelectorAll('#librarian-table input[type="checkbox"]:checked');
+    if (checkboxes.length === 1) {
+        populateEditSidebar(checkboxes[0].closest('tr'));
+        toggleEditSidebar(true);
+    } else {
+        alert('Please select exactly one librarian to edit.');
+    }
+}
+
+function toggleEditSidebar(open) {
+    const sidebar = document.getElementById('edit-sidebar');
+    if (open) {
+        sidebar.classList.add('open');
+    } else {
+        sidebar.classList.remove('open');
+    }
+}
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Novel Nook</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo img {
+            width: 100px;
+            height: auto;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            margin-left: 250px;
+            margin-right: 5px;
+        }
+        
+        .search-bar input {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            padding: 10px;
+            width: 100%;
+        }
+        
+        .search-bar button {
+            background-color: #AD512E;
+            color: #fff;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .search-bar button:hover {
+            background-color: #8e5a36;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+            margin-right: 100px;
+        }
+        
+        .header-right .filter-btn {
+            background-color: #AD512E;
+            color: #fff;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-right: 40px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .header-right .filter-btn:hover {
+            background-color: #8e5a36;
+        }
+
+        .header-right .account-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #AD512E;
+            display: flex;
+            align-items: center;
+            margin-right: 5px;
+
+        }
+        
+        .header-right .account-btn i {
+            margin-right: 10px;
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 120px;
+            left: 0;
+            height: calc(100% - 120px);
+            width: 200px;
+            background-color: #ffffff;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            padding-top: 20px;
+        }
+
+        .sidebar-item {
+            margin-top: 50px;
+            display: block;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: left;
+            background: none;
+            margin-bottom: 10px; /* space between sidebar items */
+        }
+
+        .sidebar-item i {
+            margin-right: 10px;
+        }
+
+        .sidebar-item:hover,
+        .sidebar-item.sign-out:hover {
+            background-color: #AD512E;
+            color: white;
+        }
+
+        .sign-out {
+            position: absolute;
+            bottom: 20px;
+            width: calc(100% - 40px);
+        }
+
+        .main-content {
+            margin-top: 120px; /* Adjust based on your header height */
+            padding: 20px;
+            background-color: #FFF4DC;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 200px; /* Should match margin-left */
+            right: 0;
+            overflow-y: auto; /* Add scrollbar if content exceeds height */
+        }
+        
+        nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+        }
+        
+        nav ul li {
+            cursor: pointer;
+            position: relative;
+        }
+        
+        nav ul li .dropdown-content {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        
+        nav ul li .dropdown-content button {
+            background-color: #FFFFFF; 
+            border: 2px solid #AD512E;
+            color: #AD512E; 
+            display: block;
+            width: 100%;
+            padding: 10px 20px;
+            text-align: left;
+            box-sizing: border-box;
+            font-size: 16px;
+            white-space: nowrap;
+           
+        }
+        
+        nav ul li:hover .dropdown-content {
+            display: block;
+        }
+        
+        nav ul li .dropdown-content button:hover {
+            background-color: #AD512E;
+            color: #FFFFFF;
+        }
+        
+        .books-grid {
+            display: grid;
+            margin-top: 50px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .book-item {
+            position: relative;
+            text-align: center;
+        }
+
+        .book-item img {
+            width: 150px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-item p {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .book-item input[type="checkbox"] {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            transform: scale(1.5); /* adjust checkbox size */
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            color: #333;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination a.active {
+            background-color: #AD512E;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+            border-radius: 5px;
+        }
+
+        .button:hover,
+        .search-bar button:hover,
+        .filter-btn:hover,
+        .book-card:hover,
+        .pagination a:hover:not(.active) {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .hidden-sidebar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+        }
+
+        .sidebar-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #FFF4DC;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 50%;
+            max-width: 500px;
+            max-height: 80%;
+            border-radius: 10px;
+            border: 1px solid #AD512E;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #AD512E;
+        }
+
+        .sidebar-content h2 {
+            margin-top: 0;
+            color: #AD512E;
+            text-align: center;
+        }
+
+        .sidebar-content label {
+            display: block;
+            margin: 10px 0;
+            color: #AD512E;
+        }
+
+        .sidebar-content input[type="text"],
+        .sidebar-content input[type="number"],
+        .sidebar-content input[type="date"],
+        .sidebar-content input[type="file"] {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #AD512E;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .sidebar-content button[type="submit"] {
+            background-color: #AD512E;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-content button[type="submit"]:hover {
+            background-color: #8e5a36;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .image-preview img {
+            max-width: 100px;
+            margin-bottom: 10px;
+            border: 1px solid #AD512E;
+            border-radius: 4px;
+        }
+
+        /* Approval Sidebar */
+        .approval-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .approval-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .approval-item .username,
+        .approval-item .book-name {
+            flex: 1;
+            text-align: center;
+        }
+
+        .approval-item .username {
+            display: flex;
+            align-items: center;
+        }
+
+        .approval-item .username input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .approval-item .book-name {
+            padding: 0 10px;
+        }
+
+        .approval-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-weight: bold;
+        }
+
+        .approval-header div {
+            flex: 1;
+            text-align: center;
+        }
+
+        .approval-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .approval-buttons button {
+            background-color: #AD512E;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .approval-buttons button:hover {
+            background-color: #8e5a36;
+        }
+
+        /* Overdue Books Sidebar */
+        .overdue-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .overdue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .overdue-item .username,
+        .overdue-item .book-name,
+        .overdue-item .remaining-days {
+            flex: 1;
+            text-align: center;
+        }
+
+        .overdue-item .username {
+            display: flex;
+            align-items: center;
+        }
+
+        .overdue-item .username input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .overdue-item .book-name,
+        .overdue-item .remaining-days {
+            padding: 0 10px;
+        }
+
+        .overdue-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-weight: bold;
+        }
+
+        .overdue-header div {
+            flex: 1;
+            text-align: center;
+        }
+
+        .overdue-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .overdue-buttons button {
+            background-color: #AD512E;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .overdue-buttons button:hover {
+            background-color: #8e5a36;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="images/logo.png" alt="NOVEL NOOK">
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search" id="search-input" onkeyup="searchBooks()">
+                <button type="submit" onclick="searchBooks()"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="header-right">
+                <button class="filter-btn">Filter</button>
+                <button class="account-btn"><i class="fas fa-user"></i>ACCOUNT</button>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="sidebar">
+            <button class="sidebar-item approvals-btn"><i class="fas fa-check"></i> Approvals</button>
+            <button class="sidebar-item add-book-btn"><i class="fas fa-plus"></i> Add Book</button>
+            <button class="sidebar-item edit-book-btn"><i class="fas fa-edit"></i> Edit Book</button>
+            <button class="sidebar-item delete-btn"><i class="fas fa-trash"></i> Delete</button>
+            <button class="sidebar-item overdue-books-btn"><i class="fas fa-exclamation"></i> Overdue Books</button>
+            <a href="HomePage.html" class="sidebar-item sign-out"><i class="fas fa-sign-out-alt"></i> Sign out</a>
+
+        </div>
+        <div class="main-content">
+            <nav>
+                <ul>
+                    <li>HOME</li>
+                    <li class="dropdown">
+                        <span>Books</span>
+                        <div class="dropdown-content">
+                            <button onclick="filterCategory('All')">All</button>
+                            <button onclick="filterCategory('Fiction')">Fiction</button>
+                            <button onclick="filterCategory('Non-Fiction')">Non-Fiction</button>
+                            <button onclick="filterCategory('Mystery')">Mystery</button>
+                            <button onclick="filterCategory('Young Adult')">Young Adult</button>
+                            <button onclick="filterCategory('Popular')">Popular</button>
+                        </div>
+                    </li>
+                    <li>Events</li>
+                    <li>Meeting Rooms</li>
+                    <li>Magazines</li>
+                    <li>Programs</li>
+                </ul>
+            </nav>
+            <div class="books-grid" id="books-grid">
+                <!-- Book items will be inserted here dynamically -->
+            </div>
+            <div class="pagination" id="pagination">
+                <a href="#" onclick="prevPage()">&laquo;</a>
+                <a href="#" class="active" onclick="goToPage(1)">1</a>
+                <a href="#" onclick="goToPage(2)">2</a>
+                <a href="#" onclick="goToPage(3)">3</a>
+                <a href="#">...</a>
+                <a href="#" onclick="goToPage(10)">10</a>
+                <a href="#" onclick="nextPage()">&raquo;</a>
+            </div>
+        </div>
+        
+        <div class="hidden-sidebar" id="approvals-sidebar">
+            <div class="sidebar-content">
+                <span class="close-btn" onclick="closeSidebar('approvals-sidebar')">&times;</span>
+                <h2>Approvals</h2>
+                <div class="approval-header">
+                    <div>Username</div>
+                    <div>Book Name</div>
+                </div>
+                <div class="approval-list">
+                    <!-- Approval items will be dynamically inserted here -->
+                </div>
+                <div class="approval-buttons">
+                    <button onclick="acceptSelected()">Accept</button>
+                    <button onclick="rejectSelected()">Reject</button>
+                </div>
+                <button type="button" onclick="closeSidebar('approvals-sidebar')" style="margin-top: 20px;">Done</button>
+            </div>
+        </div>
+
+        <div class="hidden-sidebar" id="add-book-sidebar">
+            <div class="sidebar-content">
+                <span class="close-btn" onclick="closeSidebar('add-book-sidebar')">&times;</span>
+                <h2>Add new book</h2>
+                <form id="add-book-form">
+                    <label>Title : <input type="text" name="title" id="add-title"></label>
+                    <label>Author : <input type="text" name="author" id="add-author"></label>
+                    <label>Price : <input type="number" name="price" id="add-price"></label>
+                    <label>Date of purchase : <input type="date" name="date_of_purchase" id="add-dateOfPurchase"></label>
+                    <label>Language : <input type="text" name="language" id="add-language"></label>
+                    <label>Number of pages : <input type="number" name="number_of_pages" id="add-numberOfPages"></label>
+                    <label>Year of Production : <input type="number" name="year_of_production" id="add-yearOfProduction"></label>
+                    <label>Subjects Covered : <input type="text" name="subjects_covered" id="add-subjectsCovered"></label>
+                    <label>Publisher : <input type="text" name="publisher" id="add-publisher"></label>
+                    <div class="image-preview">
+                        <label>Image Preview:</label>
+                        <img id="add-current-image" src="" alt="New Book Image">
+                    </div>
+                    <label>Upload an image : <input type="file" name="barcode" id="add-barcode" multiple></label>
+                    <button type="submit">Done</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="hidden-sidebar" id="edit-book-sidebar">
+            <div class="sidebar-content">
+                <span class="close-btn" onclick="closeSidebar('edit-book-sidebar')">&times;</span>
+                <h2>Edit book</h2>
+                <form id="edit-book-form">
+                    <label>Title : <input type="text" name="title" id="edit-title"></label>
+                    <label>Author : <input type="text" name="author" id="edit-author"></label>
+                    <label>Price : <input type="number" name="price" id="edit-price"></label>
+                    <label>Date of purchase : <input type="date" name="date_of_purchase" id="edit-dateOfPurchase"></label>
+                    <label>Language : <input type="text" name="language" id="edit-language"></label>
+                    <label>Number of pages : <input type="number" name="number_of_pages" id="edit-numberOfPages"></label>
+                    <label>Year of Production : <input type="number" name="year_of_production" id="edit-yearOfProduction"></label>
+                    <label>Subjects Covered : <input type="text" name="subjects_covered" id="edit-subjectsCovered"></label>
+                    <label>Publisher : <input type="text" name="publisher" id="edit-publisher"></label>
+                    <div class="image-preview">
+                        <label>Current Image:</label>
+                        <img id="edit-current-image" src="" alt="Current Book Image">
+                    </div>
+                    <label>Upload a new image : <input type="file" name="barcode" id="edit-barcode" multiple></label>
+                    <button type="submit">Done</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="hidden-sidebar" id="overdue-books-sidebar">
+            <div class="sidebar-content">
+                <span class="close-btn" onclick="closeSidebar('overdue-books-sidebar')">&times;</span>
+                <h2>Overdue Borrowed Books</h2>
+                <div class="overdue-header">
+                    <div>Username</div>
+                    <div>Book Name</div>
+                    <div>Remaining Days</div>
+                </div>
+                <div class="overdue-list">
+                    <!-- Overdue items will be dynamically inserted here -->
+                </div>
+                <div class="overdue-buttons">
+                    <button onclick="sendOverdueEmails()">Send overdue email</button>
+                    <button type="button" onclick="closeSidebar('overdue-books-sidebar')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        function searchBooks() {
+            var input, filter, booksGrid, bookItems, bookTitle, i, txtValue;
+            input = document.getElementById('search-input');
+            filter = input.value.toUpperCase();
+            booksGrid = document.querySelector('.books-grid');
+            bookItems = booksGrid.getElementsByClassName('book-item');
+
+            for (i = 0; i < bookItems.length; i++) {
+                bookTitle = bookItems[i].getElementsByTagName('p')[0];
+                txtValue = bookTitle.textContent || bookTitle.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    bookItems[i].style.display = "";
+                } else {
+                    bookItems[i].style.display = "none";
+                }
+            }
+        }
+
+        const sidebarButtons = document.querySelectorAll('.sidebar-item');
+        const booksGrid = document.getElementById('books-grid');
+
+        const books = [
+            { title: "These Infinite Threads", image: "Images/TheseInfiniteThreads.jpg", category: "Fiction", author: "Author A", price: 19.99, dateOfPurchase: "2024-01-01", language: "English", numberOfPages: 350, yearOfProduction: 2023, subjectsCovered: "Fiction", publisher: "Publisher A" },
+            { title: "I'm Glad My Mom Died", image: "Images/I’mGladMyMomDied.jpg", category: "Non-Fiction", author: "Author B", price: 24.99, dateOfPurchase: "2023-05-01", language: "English", numberOfPages: 320, yearOfProduction: 2022, subjectsCovered: "Memoir", publisher: "Publisher B" },
+            { title: "How to Solve Your Own Murder", image: "Images/HowtoSolveYourOwnMurder.jpg", category: "Mystery", author: "Author C", price: 15.99, dateOfPurchase: "2023-08-15", language: "English", numberOfPages: 290, yearOfProduction: 2023, subjectsCovered: "Mystery", publisher: "Publisher C" },
+            { title: "The Veiled Kingdom", image: "Images/veiled-kingdom.jpg", category: "Fiction", author: "Author D", price: 18.99, dateOfPurchase: "2023-11-05", language: "English", numberOfPages: 400, yearOfProduction: 2023, subjectsCovered: "Fiction", publisher: "Publisher D" },
+            { title: "Divine Rivals", image: "Images/divine-rivals.jpg", category: "Fiction", author: "Author E", price: 22.99, dateOfPurchase: "2024-02-20", language: "English", numberOfPages: 310, yearOfProduction: 2023, subjectsCovered: "Fiction", publisher: "Publisher E" },
+            { title: "Before the Coffee Gets Cold", image: "Images/BeforTheCoffee.jpg", category: "Fiction", author: "Author F", price: 12.99, dateOfPurchase: "2023-03-18", language: "English", numberOfPages: 250, yearOfProduction: 2022, subjectsCovered: "Fiction", publisher: "Publisher F" },
+            { title: "Talking to Strangers", image: "Images/talking-to-strangers.jpg", category: "Non-Fiction", author: "Author G", price: 21.99, dateOfPurchase: "2023-06-10", language: "English", numberOfPages: 280, yearOfProduction: 2022, subjectsCovered: "Non-Fiction", publisher: "Publisher G" },
+            { title: "Murder Road", image: "Images/MurderRoad.jpg", category: "Mystery", author: "Author H", price: 17.99, dateOfPurchase: "2023-09-25", language: "English", numberOfPages: 330, yearOfProduction: 2023, subjectsCovered: "Mystery", publisher: "Publisher H" }
+        ];
+
+        const overdueBooks = [
+            { username: 'Ghaith', bookname: 'Veil Fall', remainingDays: 9 },
+            { username: 'Ahmed', bookname: 'Ironwood', remainingDays: 3 },
+            { username: 'Mohammed', bookname: 'Skybound', remainingDays: 10 },
+            { username: 'Ali', bookname: 'Starforge', remainingDays: 8 },
+            { username: 'Saif', bookname: 'Frost Mark', remainingDays: 2 },
+            { username: 'Essa', bookname: 'Glimmer', remainingDays: 7 },
+            { username: 'Salem', bookname: 'Nightrise', remainingDays: 1 },
+            { username: 'Aziz', bookname: 'Sunstone', remainingDays: 1 }
+        ];
+
+        const booksPerPage = 8;
+        let currentPage = 1;
+        let currentCategory = 'All';
+        let editedBookIndex = null;
+
+        function displayOverdueBooks() {
+            const overdueList = document.querySelector('.overdue-list');
+            overdueList.innerHTML = '';
+
+            overdueBooks.forEach((overdue, index) => {
+                const overdueItem = document.createElement('div');
+                overdueItem.classList.add('overdue-item');
+                overdueItem.innerHTML = `
+                    <div class="username">
+                        <input type="checkbox" id="overdue-${index}">
+                        <label for="overdue-${index}">${overdue.username}</label>
+                    </div>
+                    <div class="book-name">${overdue.bookname}</div>
+                    <div class="remaining-days">${overdue.remainingDays} days</div>
+                `;
+                overdueList.appendChild(overdueItem);
+            });
+        }
+
+        function sendOverdueEmails() {
+            if (confirm('Are you sure you want to send overdue emails?')) {
+                const checkboxes = document.querySelectorAll('.overdue-item input[type="checkbox"]:checked');
+                const lateUsers = [];
+        
+                checkboxes.forEach(checkbox => {
+                    const index = checkbox.id.split('-')[1];
+                    if (overdueBooks[index].remainingDays <= 3) {
+                        lateUsers.push(overdueBooks[index]);
+                    }
+                });
+        
+                if (lateUsers.length > 0) {
+                    let emailMessage = 'The following users are late to return books:\n\n';
+                    lateUsers.forEach(user => {
+                        emailMessage += `Username: ${user.username}\nBook: ${user.bookname}\nDays Remaining: ${user.remainingDays} days\n\n`;
+                    });
+        
+                    alert(emailMessage);
+        
+                    // Remove late users from the overdueBooks list
+                    lateUsers.forEach(user => {
+                        const index = overdueBooks.findIndex(overdue => overdue.username === user.username && overdue.bookname === user.bookname);
+                        if (index !== -1) {
+                            overdueBooks.splice(index, 1);
+                        }
+                    });
+        
+                    displayOverdueBooks();
+                } else {
+                    alert('No users selected are late to return books.');
+                }
+        
+                // Reset checkboxes
+                const allCheckboxes = document.querySelectorAll('.overdue-item input[type="checkbox"]');
+                allCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            }
+        }
+        
+        
+
+        function displayBooks() {
+            const startIndex = (currentPage - 1) * booksPerPage;
+            const endIndex = startIndex + booksPerPage;
+            booksGrid.innerHTML = '';
+
+            const filteredBooks = currentCategory === 'All' ? books : books.filter(book => book.category === currentCategory);
+
+            for (let i = startIndex; i < endIndex && i < filteredBooks.length; i++) {
+                const book = filteredBooks[i];
+                const bookItem = document.createElement('div');
+                bookItem.classList.add('book-item');
+                bookItem.innerHTML = `
+                    <img src="${book.image}" alt="${book.title}">
+                    <input type="checkbox">
+                    <p>${book.title}</p>
+                `;
+                booksGrid.appendChild(bookItem);
+            }
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(books.filter(book => currentCategory === 'All' || book.category === currentCategory).length / booksPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLink = document.createElement('a');
+                pageLink.href = '#';
+                pageLink.textContent = i;
+                pageLink.onclick = function () {
+                    currentPage = i;
+                    displayBooks();
+                    updatePagination();
+                    return false;
+                };
+
+                if (i === currentPage) {
+                    pageLink.classList.add('active');
+                }
+
+                pagination.appendChild(pageLink);
+            }
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            currentPage = 1;
+            displayBooks();
+            updatePagination();
+        }
+
+        function init() {
+            displayBooks();
+            updatePagination();
+            displayOverdueBooks();
+        }
+
+        init();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+            document.querySelector('.approvals-btn').addEventListener('click', function() {
+                showSidebar('approvals-sidebar');
+            });
+            
+            document.querySelector('.add-book-btn').addEventListener('click', function() {
+                showSidebar('add-book-sidebar');
+            });
+            
+            document.querySelector('.edit-book-btn').addEventListener('click', function() {
+                const checkedBooks = document.querySelectorAll('.book-item input[type="checkbox"]:checked');
+                if (checkedBooks.length === 1) {
+                    if (confirm('Are you sure you want to edit this book?')) {
+                        const selectedBookTitle = checkedBooks[0].nextElementSibling.innerText;
+                        const selectedBook = books.find((book, index) => {
+                            if (book.title === selectedBookTitle) {
+                                editedBookIndex = index;
+                                return true;
+                            }
+                            return false;
+                        });
+                        
+                        // Prefill the form with the selected book details
+                        document.getElementById('edit-title').value = selectedBook.title;
+                        document.getElementById('edit-author').value = selectedBook.author;
+                        document.getElementById('edit-price').value = selectedBook.price;
+                        document.getElementById('edit-dateOfPurchase').value = selectedBook.dateOfPurchase;
+                        document.getElementById('edit-language').value = selectedBook.language;
+                        document.getElementById('edit-numberOfPages').value = selectedBook.numberOfPages;
+                        document.getElementById('edit-yearOfProduction').value = selectedBook.yearOfProduction;
+                        document.getElementById('edit-subjectsCovered').value = selectedBook.subjectsCovered;
+                        document.getElementById('edit-publisher').value = selectedBook.publisher;
+                        document.getElementById('edit-current-image').src = selectedBook.image;
+
+                        showSidebar('edit-book-sidebar');
+                    }
+                } else {
+                    alert('Please select exactly one book to edit.');
+                }
+            });
+            
+            document.querySelector('.delete-btn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to delete the selected books?')) {
+                    const checkedBooks = document.querySelectorAll('.book-item input[type="checkbox"]:checked');
+                    if (checkedBooks.length > 0) {
+                        checkedBooks.forEach(checkbox => {
+                            const selectedBookTitle = checkbox.nextElementSibling.innerText;
+                            const bookIndex = books.findIndex(book => book.title === selectedBookTitle);
+                            if (bookIndex !== -1) {
+                                books.splice(bookIndex, 1);
+                            }
+                            checkbox.closest('.book-item').remove();
+                        });
+                        displayBooks();
+                        updatePagination();
+                        alert('Selected books have been deleted.');
+                    } else {
+                        alert('Please select at least one book to delete.');
+                    }
+                }
+            });
+            
+            document.querySelector('.overdue-books-btn').addEventListener('click', function() {
+                showSidebar('overdue-books-sidebar');
+            });
+
+            document.getElementById('add-barcode').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('add-current-image').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById('edit-barcode').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('edit-current-image').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById('edit-book-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                if (confirm('Are you sure you want to save the changes to this book?')) {
+                    if (editedBookIndex !== null) {
+                        books[editedBookIndex].title = document.getElementById('edit-title').value;
+                        books[editedBookIndex].author = document.getElementById('edit-author').value;
+                        books[editedBookIndex].price = document.getElementById('edit-price').value;
+                        books[editedBookIndex].dateOfPurchase = document.getElementById('edit-dateOfPurchase').value;
+                        books[editedBookIndex].language = document.getElementById('edit-language').value;
+                        books[editedBookIndex].numberOfPages = document.getElementById('edit-numberOfPages').value;
+                        books[editedBookIndex].yearOfProduction = document.getElementById('edit-yearOfProduction').value;
+                        books[editedBookIndex].subjectsCovered = document.getElementById('edit-subjectsCovered').value;
+                        books[editedBookIndex].publisher = document.getElementById('edit-publisher').value;
+                        books[editedBookIndex].image = document.getElementById('edit-current-image').src;
+
+                        displayBooks();
+                        closeSidebar('edit-book-sidebar');
+                        alert('Book details have been updated.');
+                    }
+                }
+            });
+
+            document.getElementById('add-book-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                if (confirm('Are you sure you want to add this new book?')) {
+                    const newBook = {
+                        title: document.getElementById('add-title').value,
+                        author: document.getElementById('add-author').value,
+                        price: document.getElementById('add-price').value,
+                        dateOfPurchase: document.getElementById('add-dateOfPurchase').value,
+                        language: document.getElementById('add-language').value,
+                        numberOfPages: document.getElementById('add-numberOfPages').value,
+                        yearOfProduction: document.getElementById('add-yearOfProduction').value,
+                        subjectsCovered: document.getElementById('add-subjectsCovered').value,
+                        publisher: document.getElementById('add-publisher').value,
+                        image: document.getElementById('add-current-image').src,
+                        category: 'Fiction' // Default category, you can change it based on your needs
+                    };
+
+                    books.push(newBook);
+                    displayBooks();
+                    closeSidebar('add-book-sidebar');
+                    alert('New book has been added.');
+                }
+            });
+        });
+
+        function showSidebar(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function closeSidebar(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+    </script>
+</body>
+</html>

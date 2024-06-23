@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js" defer></script>
+    <style>
+       body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f7f6;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            transition: left 0.3s;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar .profile {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .sidebar .profile img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar nav ul li {
+            padding: 15px 20px;
+            cursor: pointer;
+        }
+
+        .sidebar nav ul li.active, .sidebar nav ul li:hover {
+            background-color: #e0e0e0;
+        }
+
+        .sidebar nav ul li.logout {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header .logo img {
+            height: 50px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header .menu {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        header .menu i {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        nav {
+        display: flex;
+        justify-content: space-around;
+        background-color: #fff;
+        padding: 10px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-section {
+            flex: 1; /* Ensures each section takes up equal space */
+            text-align: center; /* Centers the text within each section */
+        }
+
+        .nav-section ul {
+            margin: 0; /* Removes default margin */
+            padding: 0; /* Removes default padding */
+            list-style: none; /* Removes list bullet points */
+        }
+
+        .nav-section li {
+            cursor: pointer; /* Indicates the item is clickable */
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            justify-content: space-around;
+        }
+
+        nav ul li {
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        main {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .cart-content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .empty-cart {
+            flex-grow: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            padding: 50px;
+        }
+
+        .empty-cart img {
+            width: 200px;
+            height: auto;
+        }
+
+        .empty-cart h2 {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #666;
+        }
+
+        .summary {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Aligns children to start, space between, and end */
+            position: sticky;
+            top: 80px;
+            width: 300px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-left: 20px;
+            height: auto;
+            overflow-y: auto;
+        }
+        
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 24px;
+            font-weight: bold;
+            border-top: 2px solid #000; /* Adds a solid line above the total */
+            padding-top: 10px;
+            margin-top: auto; 
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .promo-code {
+            display: flex;
+            margin-top: 20px;
+            justify-content: flex-start;
+        }
+
+        .promo-code input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            margin-right: 10px;
+        }
+
+        .promo-code button {
+            padding: 10px 30px;
+            border: none;
+            background-color: #AD512E;
+            color: white;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            width: 98%;
+        }
+
+        footer .checkout {
+            display:flex;
+            justify-content: flex-start;
+        }
+
+        footer .checkout button {
+            padding: 10px 20px;
+            background-color: #AD512E;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor:pointer;
+            font-size: 18px;
+        }
+
+        .book-in-cart {
+        display: grid;
+        grid-template-columns: 1fr 2fr 2fr 2fr 20px; /* Maintain your grid setup */
+        align-items: center; /* Keep items vertically aligned */
+        gap: 6px;
+        margin-bottom: 10px;
+        padding: 10px 0; /* Add padding for visual space around items */
+        border-bottom: 1px solid #ccc; /* Adds a horizontal line after each item */
+    }
+
+        .book-in-cart div {
+        text-align: left; /* Aligns text to the left */
+    }
+
+    .summary-item span, .summary-total span {
+    font-size: 20px; /* Default size for subtotal and total */
+}
+
+
+        .book-in-cart img {
+            width: 40%; /* Adjusted to fit the grid */
+            height: auto;
+        }
+
+  
+
+        .book-in-cart h3 {
+            font-size: 15px;
+        }
+
+        .book-in-cart p {
+            font-size: 16px;
+        }
+
+        .book-in-cart .quantity {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .book-in-cart .quantity button {
+            background-color: #AD512E;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .book-in-cart .quantity input {
+            width: 40px;
+            text-align: center;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .book-in-cart .remove {
+            background-color: transparent;
+            color: #AD512E;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            justify-self: end; /* Align the remove button to the right */
+        }
+
+        .book-in-cart .remove:hover {
+            color: #AD512E;
+        }
+
+        .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 40px; /* Adjust this value as needed to increase/decrease space */
+        font-size: 18px;
+    }
+
+/* Optional: Add margin-top if you also want space above the first item */
+    .summary-item:first-child {
+    margin-top: 30px; /* Adds space above the first item only */
+}
+
+
+        @media (max-width: 480px) {
+    .sidebar {
+        width: 100%; /* Full width on small screens for easier access */
+        left: 0; /* Always visible */
+    }
+
+    .sidebar .profile img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .sidebar nav ul li {
+        padding: 12px; /* Larger touch targets */
+    }
+
+    header {
+        padding: 15px; /* More compact */
+    }
+
+    header .logo img {
+        height: 40px; /* Adjusted for header space */
+    }
+
+    header h1 {
+        font-size: 20px; /* Smaller for space */
+    }
+
+    nav ul li {
+        font-size: 16px; /* Smaller font size */
+    }
+
+    .empty-cart img {
+        width: 100px; /* Make it smaller to fit better */
+    }
+
+    .empty-cart h2 {
+        font-size: 16px;
+    }
+
+    .summary {
+        width: 100%; /* Full width to use available space */
+        padding: 10px;
+        top: 50px; /* Closer to the top */
+    }
+
+    .summary-item, .summary-total {
+        font-size: 10px; /* Smaller text for summary items */
+    }
+
+    footer .checkout button,
+    footer .promo-code button {
+        font-size: 16px; /* Smaller buttons */
+    }
+
+    footer .promo-code input {
+        font-size: 10px; /* Smaller input field */
+    }
+
+    .book-in-cart {
+        grid-template-columns: 80px 3fr 1fr 1fr 40px; /* Adjust for layout */
+        gap: 4px; /* Reduced gap */
+    }
+
+    .book-in-cart img {
+        width: 100%; /* Full column width */
+        height: auto;
+    }
+
+    .book-in-cart h3,
+    .book-in-cart p,
+    .book-in-cart .quantity {
+        font-size: 10px; /* Reduced font size for better fit */
+    }
+
+    .book-in-cart .quantity input,
+    .book-in-cart .quantity button {
+        padding: 8px; /* Smaller buttons and inputs */
+    }
+
+    .book-in-cart .remove {
+        font-size: 18px; /* Slightly larger for better touch */
+    }
+}
+      
+#back-button {
+    background: none;
+    border: none;
+    font-size: 18px; /* Smaller font size */
+    cursor: pointer;
+    padding: 5px 10px; /* Smaller padding */
+    margin-right: 10px; /* Adjusted margin to the right of the button */
+    color: #333; /* Or any other color that matches your design */
+}
+
+#back-button:hover {
+    color: #AD512E; /* Highlight color on hover */
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+
+        <div class="profile">
+            <img src="Images/Logo.png" alt="Profile Picture">
+            
+            <h3>Kate Russell</h3>
+            <p>Uni Student</p>
+        </div>
+        <nav>
+            <ul>
+                <li>My profile</li>
+                <li>Personal Details</li>
+                <li>Change password</li>
+                <li>My library</li>
+                <li class="active">My cart</li>
+                <li>Borrow books</li>
+                <li>Current Borrowed items</li>
+                <li>Favorites</li>
+                <li>My previous orders</li>
+                <li>Others</li>
+                <li>Meeting schedules</li>
+                <li>Track order</li>
+                <li>Contact & Support</li>
+                <li class="logout">Sign out</li>
+            </ul>
+        </nav>
+    </div>
+    <div class="main-content">
+        
+
+        <header>
+            <div style="flex-grow: 1; display: flex; align-items: center;">
+                <button id="back-button" onclick="window.location.href='BooksmainPage.html'">&#x2190;</button>
+                <div class="logo">
+                    <img src="Images/Logo.png" alt="Logo">
+                </div>
+            </div>
+            <h1 style="flex-grow: 2; text-align: center;">My Cart</h1>
+            <div class="menu" id="menu-button" style="flex-grow: 1; text-align: right;">
+                <i class="fa fa-bars"></i>
+            </div>
+        </header>
+        
+        <nav>
+            <div class="nav-section">
+                <ul>
+                    <li>Description</li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <ul>
+                    <li>Quantity</li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <ul>
+                    <li>Price</li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <ul>
+                    <li>Summary</li>
+                </ul>
+            </div>
+        </nav>        
+        <main>
+            <div class="cart-content">
+                <div id="books-in-cart" class="books-in-cart">
+                    <!-- Books will be dynamically generated here -->
+                </div>
+                <!-- This might be empty if there are no books -->
+                <div class="empty-cart" id="empty-cart">
+                    <img src="Images/EmptyCart.png" alt="Empty Cart">
+                    <h2>Your cart is empty</h2>
+                </div>
+            </div>
+            <div class="summary">
+                <div class="summary-item">
+                    <span>Subtotal</span>
+                    <span id="subtotal">0.00 AED</span>
+                </div>
+                <div class="summary-item">
+                    <span>Shipping</span>
+                    <span id="shipping">0.00 AED</span>
+                </div>
+                <div class="summary-item" id="discount-item">
+                    <span>Discount</span>
+                    <span id="discount">0.00 AED</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="total">0.00 AED</span>
+                </div>
+            </div>
+            
+        </main>
+        
+        <footer>
+            <div class="checkout">
+                <button onclick="redirectToPayment()">Checkout</button>
+            </div>
+            <div class="promo-code">
+                <input type="text" id="promo-code-input" placeholder="Add Promo Code">
+                <button id="apply-promo-button">Apply</button>
+            </div>
+            
+        </footer>
+    </div>
+</body>
+
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+    const menuButton = document.getElementById('menu-button');
+    const sidebar = document.getElementById('sidebar');
+
+    menuButton.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+    });
+
+    function updateCart() {
+        const booksInCart = JSON.parse(localStorage.getItem('cart')) || [];
+        const booksContainer = document.getElementById('books-in-cart');
+        const emptyCartContainer = document.getElementById('empty-cart');
+
+        if (booksInCart.length === 0) {
+            emptyCartContainer.style.display = 'flex';
+            booksContainer.innerHTML = '';
+            document.getElementById('subtotal').textContent = '0.00 AED';
+            document.getElementById('total').textContent = '0.00 AED';
+        } else {
+            emptyCartContainer.style.display = 'none';
+            booksContainer.innerHTML = '';
+            let subtotal = 0;
+            booksInCart.forEach((book, index) => {
+    // Calculate the total price for each book based on quantity
+    const bookTotal = book.price * book.quantity;
+    subtotal += bookTotal;
+
+    // Create a new div for each book and populate it with book details
+    const bookElement = document.createElement('div');
+    bookElement.className = 'book-in-cart';
+    bookElement.innerHTML = `
+        <img src="${book.image}" alt="${book.title}">
+        <div><h3>${book.title}</h3></div>
+        <div class="quantity">
+            <button onclick="updateQuantity(${index}, -1)">-</button>
+            <input type="number" value="${book.quantity}" min="1" readonly>
+            <button onclick="updateQuantity(${index}, 1)">+</button>
+        </div>
+        <div><p>${bookTotal.toFixed(2)} AED</p></div> <!-- Correctly display the total price for each book -->
+        <div><button class="remove" onclick="removeBook(${index})">&times;</button></div>
+    `;
+    booksContainer.appendChild(bookElement);
+});
+
+
+
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' AED';
+            document.getElementById('total').textContent = subtotal.toFixed(2) + ' AED';
+        }
+    }
+
+    window.updateQuantity = function(index, change) {
+        const booksInCart = JSON.parse(localStorage.getItem('cart')) || [];
+        if (change === -1 && booksInCart[index].quantity === 1) {
+            removeBook(index);
+        } else {
+            booksInCart[index].quantity += change;
+            localStorage.setItem('cart', JSON.stringify(booksInCart));
+            updateCart();
+        }
+    }
+
+    window.removeBook = function(index) {
+        const booksInCart = JSON.parse(localStorage.getItem('cart')) || [];
+        booksInCart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(booksInCart));
+        updateCart();
+    }
+
+    updateCart();
+});
+
+function applyPromoCode() {
+    const promoInput = document.getElementById('promo-code-input');
+    const subtotalElement = document.getElementById('subtotal');
+    const shippingElement = document.getElementById('shipping');
+    const discountElement = document.getElementById('discount');
+    const totalElement = document.getElementById('total');
+    const promoCode = promoInput.value.trim();
+
+    let subtotal = parseFloat(subtotalElement.textContent.replace(' AED', ''));
+    const shipping = parseFloat(shippingElement.textContent.replace(' AED', ''));
+    
+    if (promoCode === 'book15') {
+        const discount = subtotal * 0.15; // 15% discount
+        const newTotal = subtotal + shipping - discount;
+        discountElement.textContent = discount.toFixed(2) + ' AED';
+        totalElement.textContent = newTotal.toFixed(2) + ' AED';
+        alert('Promo code applied successfully!');
+    } else {
+        discountElement.textContent = '0.00 AED';
+        const newTotal = subtotal + shipping; // Remove discount if code is invalid
+        totalElement.textContent = newTotal.toFixed(2) + ' AED';
+        alert('Invalid promo code!');
+    }
+}
+
+// Add event listener to the button
+document.getElementById('apply-promo-button').addEventListener('click', applyPromoCode);
+
+function redirectToPayment() {
+    window.location.href = 'ChoosePaymentMethod.html'; 
+    
+}
+
+
+
+
+
+    function storeSummaryData() {
+        const subtotal = document.getElementById('subtotal').textContent;
+        const shipping = document.getElementById('shipping').textContent;
+        const discount = document.getElementById('discount').textContent;
+        const total = document.getElementById('total').textContent;
+
+        localStorage.setItem('subtotal', subtotal);
+        localStorage.setItem('shipping', shipping);
+        localStorage.setItem('discount', discount);
+        localStorage.setItem('total', total);
+    }
+
+    function redirectToPayment() {
+        storeSummaryData();
+        window.location.href = 'ChoosePaymentMethod.html';
+    }
+
+
+
+
+</script>
+</html>

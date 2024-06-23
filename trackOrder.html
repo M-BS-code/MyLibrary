@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f8f8;
+    }
+    header {
+        background-color: #2E5C6E;
+        color: white;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    header img {
+        height: 50px;
+    }
+    header h1 {
+        font-size: 24px;
+        margin: 0;
+        flex-grow: 1;
+        text-align: center;
+    }
+    header .order-number {
+        font-size: 18px;
+        margin-right: 50px;
+    }
+    #toggleSidebarBtn {
+        font-size: 24px;
+        cursor: pointer;
+    }
+    .track-order-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .track-order-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .track-order-step {
+        text-align: center;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        width: 23%;
+        background-color: #fff;
+        position: relative;
+    }
+    .track-order-step.active {
+        background-color: #FBE4A6;
+    }
+    .track-order-step i {
+        font-size: 36px;
+        margin-bottom: 10px;
+        color: #2E5C6E;
+    }
+    .track-order-step p {
+        margin: 0;
+        font-size: 16px;
+        color: #2E5C6E;
+    }
+    .track-order-step .date-time {
+        font-size: 14px;
+        color: #777;
+    }
+    .track-order-step:not(:last-child)::after {
+        content: '\f178';
+        font-family: FontAwesome;
+        font-size: 24px;
+        color: #2E5C6E;
+        position: absolute;
+        right: -20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .track-order-info {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .track-order-info .info-box {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: flex-start;
+
+    }
+    .info-box i.fas.fa-home {
+          color: #2E5C6E;  
+        margin-top: 20px;  
+        margin-right: 10px;  
+
+    }
+    
+    
+    .review-box {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+    .review-section {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .review-section .review-star {
+        font-size: 20px;
+        color: #2E5C6E;
+        margin-right: 10px;
+    }
+    
+    .review-section h3 {
+        font-size: 18px;
+        color: #000000;
+        margin: 0;
+    }
+    
+    
+    .review-box textarea {
+        width: 100%; /* Adjust the width as needed */
+        min-height: 100px; /* Minimum height for textarea */
+        max-width: 100%; /* Ensure textarea doesn't exceed parent width */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 16px;
+        color: #777;
+        margin-top: 10px;
+        resize: vertical; /* Allow vertical resizing only */
+        box-sizing: border-box; /* Ensure padding doesn't affect width */
+    }
+
+    .stars {
+        display: flex;
+        justify-content: center; /* Center the stars */
+        font-size: 24px;
+        color: #2E5C6E;
+        margin: 10px 0; /* Adjust margin for spacing */
+    }
+
+    .stars i {
+        cursor: pointer;
+        margin: 0 5px; /* Add spacing between stars */
+    }
+
+    .review-box button {
+        background-color: #2E5C6E;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 10px;
+        font-size: 16px; /* Adjust font size */
+        transition: background-color 0.3s;
+        align-self: flex-start; /* Align the button to the left */
+    }
+
+    .review-box button:hover {
+        background-color: #244b59; /* Darker shade for hover effect */
+    }
+
+    /* Media query for smaller screens */
+    @media screen and (max-width: 768px) {
+        .review-box {
+            padding: 15px;
+        }
+
+        .review-section {
+            flex-direction: row; /* Ensure items are displayed in a row */
+            align-items: center;
+        }
+    
+        .review-section .review-star {
+            font-size: 16px; /* Adjust icon size */
+            margin-right: 5px; /* Adjust spacing between icon and text */
+        }
+    
+        .review-section h3 {
+            font-size: 16px; /* Adjust font size */
+            margin-top: 5px; /* Adjust margin */
+        }
+    }
+
+        .stars {
+            font-size: 20px;
+        }
+
+        .review-box textarea {
+            min-height: 80px; /* Adjust minimum height */
+            font-size: 14px; /* Adjust font size */
+        }
+
+        .review-box button {
+            font-size: 14px;
+        }
+    
+ 
+
+        .logo img {
+            height: 50px;
+        }
+
+        .sidebar {
+            display: none;
+            width: 250px;
+            max-height: calc(100vh - 60px);
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 90px;
+            bottom: 10px;
+            right: 0;
+            transition: right 0.3s;
+            overflow-y: auto;
+        }
+    
+        .sidebar.open {}
+    
+        .sidebar .avatar {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+    
+        .sidebar h3 {
+            margin: 10px 0 5px 0;
+            font-size: 1.2em;
+        }
+    
+        .sidebar p {
+            margin: 0 0 20px 0;
+            color: gray;
+        }
+    
+        .sidebar a {
+            text-decoration: none;
+            color: black;
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+    
+        .sidebar a .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    
+        .sidebar a:last-child {
+            border-bottom: none;
+        }
+    
+        .sidebar .signout {
+            text-align: center;
+            margin-top: 20px;
+        }
+    
+        .sidebar .signout a {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            color: black;
+        }
+    
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: -60px;
+            margin-right: 40px;
+        }
+    
+        .header-right button {
+            margin-left: 20px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #AD512E;
+        }
+
+    </style>
+    </head>
+    <body>
+        <header>
+            <a href="homepage.html">
+                <img src="images/logo.png" alt="Logo">
+            </a>
+                        <h1>Track Order</h1>
+            <div class="order-number">Order Number</div>
+            <i id="toggleSidebarBtn" class="fas fa-bars"></i>
+        </header>
+    
+        <div class="track-order-container">
+            <div class="track-order-steps">
+                <div class="track-order-step">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Order Placed</p>
+                    <p class="date-time">Date : Time</p>
+                </div>
+                <div class="track-order-step active">
+                    <i class="fas fa-box"></i>
+                    <p>Order Shipped</p>
+                    <p class="date-time">Date : Time</p>
+                </div>
+                <div class="track-order-step">
+                    <i class="fas fa-truck"></i>
+                    <p>Out for Delivery</p>
+                    <p class="date-time">Date : Time</p>
+                </div>
+                <div class="track-order-step">
+                    <i class="fas fa-home"></i>
+                    <p>Order Received</p>
+                    <p class="date-time">Date : Time</p>
+                </div>
+            </div>
+    
+            <div class="track-order-info">
+                <div class="info-box">
+                    <i class="fas fa-home"></i>
+                    <div>
+                        <h3>Delivery Address</h3>
+                        <p>Address: <span>123 Main St, Apt 4B</span></p>
+                        <p>City: <span>New York</span></p>
+                        <p>Country: <span>USA</span></p>
+                    </div>
+                </div>
+                <div class="info-box review-box">
+                    <div class="review-section">
+                        <i class="fas fa-star review-star"></i>
+                        <h3>Don’t Forget to Review and Rate</h3>
+                    </div>
+                    <textarea id="reviewText" placeholder="Add your comments here"></textarea>
+                    <div class="stars" id="stars">
+                        <i class="fas fa-star" data-value="1"></i>
+                        <i class="fas fa-star" data-value="2"></i>
+                        <i class="fas fa-star" data-value="3"></i>
+                        <i class="fas fa-star" data-value="4"></i>
+                        <i class="fas fa-star" data-value="5"></i>
+                    </div>
+                    <button id="submitReview">Submit</button>
+                </div>
+                
+    
+      
+                <div class="sidebar">
+                    <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                    <h3>Kate Russell</h3>
+                    <p>Uni Student</p>
+        
+                    <h4>My profile</h4>
+                    <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                    <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+        
+                    <h4>My library</h4>
+                    <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                    <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                    <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                    <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                    <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+        
+                    <h4>Others</h4>
+                    <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                    <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                    <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+        
+                    <div class="signout">
+                        <a href="Login.html"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                    </div>
+                </div>
+    
+        <script>
+            // Get the button and sidebar elements
+            var toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+            var sidebar = document.querySelector('.sidebar');
+            
+            // Add an event listener to the button to toggle the sidebar
+            toggleSidebarBtn.addEventListener('click', function() {
+                if (sidebar.style.display === 'none' || sidebar.style.display === '') {
+                    sidebar.style.display = 'block'; /* Show the sidebar */
+                } else {
+                    sidebar.style.display = 'none'; /* Hide the sidebar */
+                }
+            });
+    
+            // Star rating functionality
+            const stars = document.querySelectorAll('.stars i');
+            let selectedRating = 0;
+    
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    selectedRating = star.getAttribute('data-value');
+                    stars.forEach(s => {
+                        s.style.color = s.getAttribute('data-value') <= selectedRating ? '#FFD700' : '#2E5C6E';
+                    });
+                });
+    
+                star.addEventListener('mouseover', () => {
+                    stars.forEach(s => {
+                        s.style.color = s.getAttribute('data-value') <= star.getAttribute('data-value') ? '#FFD700' : '#2E5C6E';
+                    });
+                });
+    
+                star.addEventListener('mouseout', () => {
+                    stars.forEach(s => {
+                        s.style.color = s.getAttribute('data-value') <= selectedRating ? '#FFD700' : '#2E5C6E';
+                    });
+                });
+            });
+    
+            // Submit review button functionality
+            const submitReviewButton = document.getElementById('submitReview');
+            const reviewText = document.getElementById('reviewText');
+    
+            submitReviewButton.addEventListener('click', () => {
+                const review = reviewText.value;
+                if (selectedRating > 0 && review) {
+                    alert(`Rating: ${selectedRating}\nReview: ${review}`);
+                    // Here you can add code to submit the review data to a server or handle it as needed
+                    reviewText.value = '';
+                    selectedRating = 0;
+                    stars.forEach(s => {
+                        s.style.color = '#2E5C6E';
+                    });
+                } else {
+                    alert('Please provide a rating and a review.');
+                }
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const user = JSON.parse(localStorage.getItem('user'));
+                const sidebar = document.querySelector('.sidebar');
+        
+                function renderSidebar(role) {
+                    if (role === 'student') {
+                        sidebar.innerHTML = `
+                            <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                            <h3>Kate Russell</h3>
+                            <p>Uni Student</p>
+        
+                            <h4>My profile</h4>
+                            <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                            <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+        
+                            <h4>My library</h4>
+                            <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                            <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                            <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                            <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                            <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+        
+                            <h4>Others</h4>
+                            <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                            <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                            <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+        
+                            <div class="signout">
+                                <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                            </div>
+                        `;
+                    } else if (role === 'nonstudent') {
+                        sidebar.innerHTML = `
+                            <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                            <h3>Kate Russell</h3>
+                            <p>Non-student</p>
+        
+                            <h4>My profile</h4>
+                            <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                            <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+        
+                            <h4>My library</h4>
+                            <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                            <a href="BorrowingForNon.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                            <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                            <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                            <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+        
+                            <h4>Others</h4>
+                            <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                            <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                            <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+        
+                            <div class="signout">
+                                <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                            </div>
+                        `;
+                    } else {
+                        sidebar.innerHTML = `
+                            <h3>Welcome to the Library</h3>
+                            <p>Please <a href="Signup.html">sign up</a> or <a href="Login.html">log in</a>.</p>
+                        `;
+                    }
+                }
+        
+                if (user) {
+                    renderSidebar(user.role);
+                }
+        
+                document.querySelectorAll('.sidebar a').forEach(link => {
+                    link.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        const target = event.target.closest('a').getAttribute('href');
+                        window.location.href = target;
+                    });
+                });
+            });
+        
+            function logout() {
+                localStorage.removeItem('user');
+            }
+        </script>
+        
+    </body>
+    </html>
+    

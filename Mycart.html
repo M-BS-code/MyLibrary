@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+    <script src="scripts.js" defer></script>
+    <style>
+/* Default styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f7f6;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    /* other styles */
+}
+
+/* Main content */
+.main-content {
+    width: calc(100% - 250px); /* adjust for sidebar width */
+    /* other styles */
+}
+
+/* Media Query for screens smaller than 768px (typical phone sizes) */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column; /* stack header, sidebar, and content vertically */
+    }
+
+    .sidebar {
+        width: 100%; /* full width on smaller screens */
+        position: relative; /* remove fixed position */
+        top: 0; /* reset top position */
+        margin-top: 0; /* reset margin-top */
+    }
+
+    .main-content {
+        width: 100%;
+        margin-left: 0; /* reset margin left */
+    }
+}
+
+/* Additional responsive adjustments can be made here */
+
+
+        .sidebar {
+            display: none;
+            width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 100px; 
+            bottom: 0;  
+            right: 0;
+            z-index: 1001;  
+            overflow-y: auto;
+            margin-top: 35px;
+        }
+        .sidebar.open {
+            display: block;
+        }
+        
+        
+        .sidebar .avatar {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+        .sidebar h3 {
+            margin: 10px 0 5px 0;
+            font-size: 1.2em;
+        }
+        .sidebar p {
+            margin: 0 0 20px 0;
+            color: gray;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: black;
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .sidebar a .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .sidebar a:last-child {
+            border-bottom: none;
+        }
+        .sidebar .signout {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .sidebar .signout a {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            color: black;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: -60px;
+            margin-right: 40px;
+        }
+        .header-right button {
+            margin-left: 20px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #AD512E;
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo img {
+            height: 50px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            margin-left: 40px;
+            margin-right: 40px;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+        }
+        .search-bar button {
+            padding: 8px;
+            background-color: #AD512E;
+            border: 1px solid #AD512E;
+            border-radius: 0 4px 4px 0;
+            color: #fff;
+            cursor: pointer;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        .header-right button {
+            margin-left: 20px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #AD512E;
+        }
+        .main-content {
+            margin-left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        header .logo img {
+            height: 50px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        header .menu {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        header .menu i {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fff;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            justify-content: space-around;
+        }
+        nav ul li {
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        main {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .cart-content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .promo-code {
+            display: flex;
+            justify-content: center;  
+            margin-top: 20px;
+            margin-right: 50px;
+
+        }
+        
+        .promo-code input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+        }
+        
+        .promo-code button {
+            padding: 10px 30px;
+            border: none;
+            background-color: #a87e6e;
+            color: white;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+        
+        .empty-cart img {
+            width: 300px;  
+            height: 300px; 
+        }
+
+        
+        
+        .empty-cart {
+            flex-grow: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            padding: 50px;
+        }
+      
+        .empty-cart h2 {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #666;
+        }
+        .summary {
+            width: 300px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 24px;
+            font-weight: bold;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+        }
+        .promo-code {
+            display: flex;
+            margin-top: 20px;
+        }
+        .promo-code input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+        }
+        .promo-code button {
+            padding: 10px 30px;
+            border: none;
+            background-color: #a87e6e;
+            color: white;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+        footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            width: 100%;
+        }
+        footer .checkout {
+            display: flex;
+            justify-content: flex-start;
+        }
+        footer .checkout button {
+            padding: 10px 20px;
+            background-color: #a87e6e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        footer .promo-code {
+            display: flex;
+            justify-content: flex-end;
+        }
+        footer .promo-code input, footer .promo-code button {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+ 
+    <div class="sidebar" id="sidebar">
+        <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+        <h3>Kate Russell</h3>
+        <p>Uni Student</p>
+
+        <h4>My profile</h4>
+        <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+        <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+
+        <h4>My library</h4>
+        <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+        <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+        <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+        <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+        <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+
+        <h4>Others</h4>
+        <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+        <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+        <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+
+        <div class="signout">
+            <a href="Login.html"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <header>
+            <div class="logo">
+                <a href="homepage.html">
+                    <img src="images/logo.png" alt="Logo">
+                </a>            </div>
+            <h1>My Cart</h1>
+            <div class="menu" id="toggleSidebarBtn">
+                <i class="fa fa-bars"></i>
+            </div>
+        </header>
+        <nav>
+            <ul>
+                <li>Description</li>
+                <li>Quantity</li>
+                <li>Price</li>
+                <li>Summary</li>
+            </ul>
+        </nav>
+        <main>
+            <div class="cart-content">
+                <div class="empty-cart">
+                    <img src="Images/Empty.png" alt="Empty Cart">
+                 </div>
+                <div class="summary">
+                    <div class="summary-item">
+                        <span>Subtotal</span>
+                        <span>0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Shipping</span>
+                        <span>0.00</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>0.00 AED</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <div class="checkout">
+                <button>Checkout</button>
+            </div>
+            <div class="promo-code">
+                <input type="text" placeholder="Add Promo Code">
+                <button>Apply</button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Get the button and sidebar elements
+        var toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+        var sidebar = document.getElementById('sidebar');
+
+        // Add an event listener to the button to toggle the sidebar
+        toggleSidebarBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('open');
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const sidebar = document.querySelector('.sidebar');
+    
+            function renderSidebar(role) {
+                if (role === 'student') {
+                    sidebar.innerHTML = `
+                        <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                        <h3>Kate Russell</h3>
+                        <p>Uni Student</p>
+    
+                        <h4>My profile</h4>
+                        <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                        <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+    
+                        <h4>My library</h4>
+                        <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                        <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                        <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                        <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                        <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+    
+                        <h4>Others</h4>
+                        <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                        <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                        <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+    
+                        <div class="signout">
+                            <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                        </div>
+                    `;
+                } else if (role === 'nonstudent') {
+                    sidebar.innerHTML = `
+                        <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                        <h3>Kate Russell</h3>
+                        <p>Non-student</p>
+    
+                        <h4>My profile</h4>
+                        <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                        <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+    
+                        <h4>My library</h4>
+                        <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                        <a href="BorrowingForNon.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                        <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                        <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                        <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+    
+                        <h4>Others</h4>
+                        <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                        <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                        <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+    
+                        <div class="signout">
+                            <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                        </div>
+                    `;
+                } else {
+                    sidebar.innerHTML = `
+                        <h3>Welcome to the Library</h3>
+                        <p>Please <a href="Signup.html">sign up</a> or <a href="Login.html">log in</a>.</p>
+                    `;
+                }
+            }
+    
+            if (user) {
+                renderSidebar(user.role);
+            }
+    
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const target = event.target.closest('a').getAttribute('href');
+                    window.location.href = target;
+                });
+            });
+        });
+    
+        function logout() {
+            localStorage.removeItem('user');
+        }
+    </script>
+    
+</body>
+</html>

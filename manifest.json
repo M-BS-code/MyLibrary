@@ -1,0 +1,23 @@
+{
+    "name": "Library Management System",
+    "short_name": "Library",
+    "start_url": "/HomePage.html",
+    "display": "standalone",
+    "background_color": "#FFF5DD",
+    "theme_color": "#AD512E",
+    "orientation": "portrait",
+    "icons": [
+      {
+        "src": "Images/logo-144.png",
+        "sizes": "144x144",
+        "type": "image/png"
+      },
+      {
+        "src": "Images/logo-192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ],
+    "prefer_related_applications": false
+  }
+  

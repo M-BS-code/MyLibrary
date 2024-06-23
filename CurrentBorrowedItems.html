@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Borrowed Items</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        
+/* Media queries for phone-sized screens (up to 600px) */
+@media (max-width: 600px) {
+    .main-container h2 {
+        font-size: 1.6em; /* Reduced size for 'Current Borrowed Items' */
+        padding: 8px 0; /* Adjust padding for balanced spacing */
+    }
+
+    section h3 {
+        font-size: 1.5em; /* Reduced size for 'Your Shelf' */
+        margin-bottom: 15px; /* Adjust bottom margin for spacing */
+    }
+
+    .tabs button {
+        font-size: 14px; /* Reduced font size for tab labels */
+        padding: 8px 12px; /* Adjust padding for tabs */
+    }
+}
+/* Media queries for phone-sized screens (up to 600px) */
+@media (max-width: 600px) {
+    .main-container hr {
+        width: 80% !important; /* Reduced width with !important to ensure application */
+        height: 2px !important; /* Reduced thickness with !important */
+        margin: 10px auto !important; /* Adjusted margin to center the hr and provide space */
+        background-color: #3C3C3B !important; /* Ensuring the color applies */
+    }
+}
+
+
+@media (max-width: 600px) {
+    .book-card {
+        width: 180px; /* Reduce the width of the cards */
+        padding: 10px; /* Reduce padding inside the cards */
+    }
+
+    .book-card img {
+        height: auto; /* Maintain aspect ratio */
+        max-height: 140px; /* Reduce the image height */
+    }
+
+    .book-grid {
+        justify-content: space-around; /* Evenly space the cards horizontally */
+    }
+}
+
+
+
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFF4DC;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .sidebar {
+            display: none;
+            width: 250px;
+            max-height: calc(100vh - 60px);
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 60px;
+            right: 0;
+            transition: right 0.3s;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {}
+
+        .sidebar .avatar {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+
+        .sidebar h3 {
+            margin: 10px 0 5px 0;
+            font-size: 1.2em;
+        }
+
+        .sidebar p {
+            margin: 0 0 20px 0;
+            color: gray;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: black;
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar a .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .sidebar a:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar .signout {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .sidebar .signout a {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            color: black;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: -60px;
+            margin-right: 40px;
+        }
+
+        .header-right button {
+            margin-left: 20px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #AD512E;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            margin-left: 40px;
+            margin-right: 40px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .search-bar button {
+            padding: 8px;
+            background-color: #AD512E;
+            border: 1px solid #AD512E;
+            border-radius: 0 4px 4px 0;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right button {
+            margin-left: 20px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #AD512E;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 100px auto 20px auto;
+            background-color: #FFF4DC;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .main-container h2 {
+            font-size: 2.5em;
+            color: #3C3C3B;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .main-container hr {
+            width: 500px;
+            height: 3px;
+            background-color: #3C3C3B;
+            border: none;
+            margin: 10px auto;
+        }
+
+        section h3 {
+            font-size: 2em;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .tabs button {
+            background-color: transparent;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 10px;
+            color: #3C3C3B;
+        }
+
+        .tabs button.active {
+            color: #AD512E;
+            border-bottom: 2px solid #AD512E;
+        }
+
+        .book-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .book-card {
+            background-color: #fff;
+            width: 220px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-card img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .book-card h4 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .book-card p {
+            margin: 5px 0;
+            color: #777;
+        }
+
+        .book-card .borrow-info {
+            margin-bottom: 10px;
+            justify-content: center;
+        }
+
+        .book-card .borrow-info span {
+            display: block;
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        .book-card .borrow-info span.due {
+            color: red;
+        }
+
+        .book-card .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .book-card .action-buttons button {
+            background-color: #AD512E;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .book-card .action-buttons button.return {
+            background-color: #fff;
+            color: #AD512E;
+            border: 1px solid #AD512E;
+        }
+
+        .book-card .action-buttons button.read {
+            background-color: #fff;
+            color: #AD512E;
+            border: 1px solid #AD512E;
+        }
+
+        .book-card .action-buttons button.e-book {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: #3C3C3B;
+        }
+
+        .pagination a.active {
+            background-color: #AD512E;
+            color: #fff;
+        }
+        
+
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <a href="HomePage.html" class="logo">
+                <img src="images/logo.png" alt="Logo">
+            </a>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="header-right">
+                <button class="filter-btn"><i class="fas fa-filter"></i> Filter</button>
+                <button class="account-btn"><i class="fas fa-user"></i> Account</button>
+                <button id="toggleSidebarBtn" class="menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="main-container">
+            <h2>Current Borrowed Items</h2>
+            <hr>
+            <section>
+                <h3>Your <span style="color: #AD512E;">Shelf</span></h3>
+
+                <div class="tabs">
+                    <button class="active" data-category="all">All Books</button>
+                    <button data-category="favourite">Favourite</button>
+                    <button data-category="e-books">E-Books</button>
+                    <button data-category="audio-books">Audio Books</button>
+                    <button data-category="articles-journals">Articles & Journals</button>
+                </div>
+
+                <div class="book-grid">
+                    <div class="book-card" data-category="all normal-books">
+                        <img src="images/borrow1.png" alt="Don't Make Me Think">
+                        <div class="borrow-info">
+                            <span>Borrowed on</span>
+                            <span>11 Mar 2023 09:00 AM</span>
+                            <span>Submission Due</span>
+                            <span>14 Mar 2023</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="borrowed">Borrowed</button>
+                            <button class="return">Return</button>
+                        </div>
+                        <h4>Don't Make Me Think</h4>
+                        <p>Steve Krug, 2000</p>
+                        <p>4.5/5</p>
+                    </div>
+                    <div class="book-card" data-category="all e-books">
+                        <img src="images/borrow3.png" alt="Rich Dad Poor Dad">
+                        <div class="borrow-info">
+                            <span>Borrowed on</span>
+                            <span>11 Mar 2023 09:00 AM</span>
+                            <span>Submission Due</span>
+                            <span>14 Mar 2023</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="e-book">E-BOOK</button>
+                            <button class="read">Read</button>
+                        </div>
+                        <h4>Rich Dad Poor Dad</h4>
+                        <p>Robert T. Kiyosaki, 1997</p>
+                        <p>5/5</p>
+                    </div>
+                    <div class="book-card" data-category="all normal-books">
+                        <img src="images/borrow2.png" alt="The Design of Everyday Things">
+                        <div class="borrow-info">
+                            <span>Borrowed on</span>
+                            <span>2 Mar 2023 09:00 AM</span>
+                            <span>Submission Due</span>
+                            <span class="due">13 Mar 2023 (Over Due)</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="borrowed">Borrowed</button>
+                            <button class="return">Return</button>
+                        </div>
+                        <h4>The Design of Everyday Things</h4>
+                        <p>Don Norman, 2000</p>
+                        <p>5/5</p>
+                    </div>
+                    <div class="book-card" data-category="all normal-books">
+                        <img src="images/borrow6.png" alt="JavaScript Scope & Closures">
+                        <div class="borrow-info">
+                            <span>Borrowed on</span>
+                            <span>2 Mar 2023 09:00 AM</span>
+                            <span>Submission Due</span>
+                            <span class="due">13 Mar 2023 (Over Due)</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="borrowed">Borrowed</button>
+                            <button class="return">Return</button>
+                        </div>
+                        <h4>JavaScript Scope & Closures</h4>
+                        <p>Kyle Simpson, 2014</p>
+                        <p>4.5/5</p>
+                    </div>
+                    <div class="book-card" data-category="all e-books">
+                        <img src="images/borrow7.png" alt="Sprint: Solve Big Problems">
+                        <div class="borrow-info">
+                            <span>Borrowed on</span>
+                            <span>11 Mar 2023 09:00 AM</span>
+                            <span>Submission Due</span>
+                            <span>14 Mar 2023</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="e-book">E-BOOK</button>
+                            <button class="read">Read</button>
+                        </div>
+                        <h4>Sprint: Solve Big Problems</h4>
+                        <p>Robert T. Kiyosaki, 1997</p>
+                        <p>5/5</p>
+                    </div>
+                </div>
+
+            </section>
+            <div class="pagination">
+                <a href="#" class="active">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">...</a>
+                <a href="#">10</a>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+            <h3>Kate Russell</h3>
+            <p>Uni Student</p>
+
+            <h4>My profile</h4>
+            <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+            <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+
+            <h4>My library</h4>
+            <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+            <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+            <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+            <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+            <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+
+            <h4>Others</h4>
+            <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+            <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+            <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+
+            <div class="signout">
+                <a href="Login.html"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Get the button and sidebar elements
+        var toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+        var sidebar = document.querySelector('.sidebar');
+
+        // Add an event listener to the button to toggle the sidebar
+        toggleSidebarBtn.addEventListener('click', function () {
+            if (sidebar.style.display === 'none') {
+                sidebar.style.display = 'block';
+            } else {
+                sidebar.style.display = 'none';
+            }
+        });
+    </script>
+    <script> document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('.tabs button');
+        const bookCards = document.querySelectorAll('.book-card');
+        const searchInput = document.querySelector('.search-bar input');
+    
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(btn => btn.classList.remove('active'));
+                tab.classList.add('active');
+    
+                const category = tab.getAttribute('data-category');
+                bookCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category').includes(category)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    
+        searchInput.addEventListener('keyup', () => {
+            const searchValue = searchInput.value.toLowerCase();
+            bookCards.forEach(card => {
+                const title = card.querySelector('h4').textContent.toLowerCase();
+                const author = card.querySelector('p').textContent.toLowerCase();
+                if (title.includes(searchValue) || author.includes(searchValue)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+   
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const sidebar = document.querySelector('.sidebar');
+
+        function renderSidebar(role) {
+            if (role === 'student') {
+                sidebar.innerHTML = `
+                    <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                    <h3>Kate Russell</h3>
+                    <p>Uni Student</p>
+
+                    <h4>My profile</h4>
+                    <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                    <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+
+                    <h4>My library</h4>
+                    <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                    <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                    <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                    <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                    <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+
+                    <h4>Others</h4>
+                    <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                    <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                    <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+
+                    <div class="signout">
+                        <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                    </div>
+                `;
+            } else if (role === 'nonstudent') {
+                sidebar.innerHTML = `
+                    <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                    <h3>Kate Russell</h3>
+                    <p>Non-student</p>
+
+                    <h4>My profile</h4>
+                    <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                    <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+
+                    <h4>My library</h4>
+                    <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                    <a href="BorrowingForNon.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                    <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                    <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                    <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+
+                    <h4>Others</h4>
+                    <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                    <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                    <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+
+                    <div class="signout">
+                        <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                    </div>
+                `;
+            } else {
+                sidebar.innerHTML = `
+                    <h3>Welcome to the Library</h3>
+                    <p>Please <a href="Signup.html">sign up</a> or <a href="Login.html">log in</a>.</p>
+                `;
+            }
+        }
+
+        if (user) {
+            renderSidebar(user.role);
+        }
+
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const target = event.target.closest('a').getAttribute('href');
+                window.location.href = target;
+            });
+        });
+    });
+
+    function logout() {
+        localStorage.removeItem('user');
+    }
+</script>
+
+</body>
+
+</html>

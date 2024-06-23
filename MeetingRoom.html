@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Rooms</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f7f6;
+    }
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 800;
+    }
+
+    .logo img {
+        height: 50px;
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+
+    .search-bar input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px 0 0 4px;
+    }
+
+    .search-bar button {
+        padding: 8px;
+        background-color: #AD512E;
+        border: 1px solid #AD512E;
+        border-radius: 0 4px 4px 0;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+    }
+
+    .header-right button {
+        margin-left: 20px;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #AD512E;
+        display: flex;
+        align-items: center;
+    }
+
+    .header-right button i {
+        margin-right: 5px;
+    }
+
+    .sidebar {
+        display: none;
+        width: 250px;
+        max-height: calc(100vh - 60px);
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 60px;
+        right: 0;
+        transition: right 0.3s;
+        overflow-y: auto;
+    }
+
+    
+    .sidebar .avatar {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
+
+    .sidebar h3 {
+        margin: 10px 0 5px 0;
+        font-size: 1.2em;
+    }
+
+    .sidebar p {
+        margin: 0 0 20px 0;
+        color: gray;
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        color: black;
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .sidebar a .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+    .sidebar a:last-child {
+        border-bottom: none;
+    }
+
+    .sidebar .signout {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .sidebar .signout a {
+        padding: 10px 20px;
+        background-color: #f1f1f1;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        color: black;
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+        background-color: #fff;
+        padding: 10px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-top: 80px; /* Adjusted margin to account for fixed header */
+    }
+
+    nav ul {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    nav ul li {
+        margin: 0 15px;
+        cursor: pointer;
+    }
+
+    nav ul li.active {
+        color: #a87e6e;
+    }
+
+    main {
+        padding: 20px;
+        margin-top: 20px; /* Adjusted margin to account for fixed header */
+    }
+
+    .filter {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+
+    .filter button {
+        padding: 10px 20px;
+        border: 1px solid #a87e6e;
+        background-color: #fff;
+        color: #a87e6e;
+        cursor: pointer;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .filter button i {
+        margin-right: 5px;
+    }
+
+    .room-cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .room-card {
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 7px;
+        overflow: hidden;
+        width: calc(33.333% - 30px);
+        cursor: pointer;
+        position: relative;
+    }
+
+    .room-card img {
+        width: 80%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .room-card .favorite {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #f00;
+        font-size: 24px;
+    }
+
+    .room-info {
+        padding: 15px;
+    }
+
+    .room-info h3 {
+        margin-top: 0;
+    }
+
+    .room-info .status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .room-info .status.available {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .room-info .status.occupied {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .room-info .rating {
+        margin-top: 10px;
+        color: #f39c12;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .pagination button {
+        margin: 0 5px;
+        padding: 10px 20px;
+        border: none;
+        background-color: #fff;
+        color: #000;
+        cursor: pointer;
+    }
+</style>
+<body>
+    <header class="header-container">
+        <div class="logo">
+            <img src="logo.png" alt="Logo">
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search Books">
+            <button><i class="fa fa-search"></i></button>
+        </div>
+        <div class="header-right">
+            <button><i class="fa fa-user"></i> ACCOUNT</button>
+            <button id="toggleSidebarBtn" class="menu"><i class="fa fa-bars"></i></button>
+        </div>
+    </header>
+    <nav>
+        <ul>
+            <li>Home</li>
+            <li>Books</li>
+            <li>Events</li>
+            <li class="active">Meeting Rooms</li>
+            <li>Magazines</li>
+            <li>Programs</li>
+        </ul>
+    </nav>
+    <main>
+        <div class="filter">
+            <button><i class="fa fa-filter"></i> Filter</button>
+        </div>
+        <div class="room-cards">
+            <div class="room-card">
+                <img src="Images/image2.jpg" alt="Meeting Room">
+                <i class="fa fa-heart favorite"></i>
+                <div class="room-info">
+                    <h3>Meeting Room</h3>
+                    <p>The meeting room is a modern and stylish space, designed with...</p>
+                    <div class="status available">Available</div>
+                    <div class="rating">★★★★★</div>
+                </div>
+            </div>
+            <div class="room-card">
+                <img src="Images/image4.jpg" alt="Meeting Room">
+                <i class="fa fa-heart favorite"></i>
+                <div class="room-info">
+                    <h3>Meeting Room</h3>
+                    <p>The meeting room is a                    modern and stylish space, designed with...</p>
+                    <div class="status available">Available</div>
+                    <div class="rating">★★★★☆</div>
+                </div>
+            </div>
+            <div class="room-card">
+                <img src="Images/image3.jpg" alt="Study Room">
+                <i class="fa fa-heart favorite"></i>
+                <div class="room-info">
+                    <h3>Study Room</h3>
+                    <p>The study room is designed to provide a comfortable and focused...</p>
+                    <div class="status occupied">Occupied</div>
+                    <div class="rating">★★★☆☆</div>
+                </div>
+            </div>
+            <div class="room-card">
+                <img src="Images/image1.jpg" alt="Study Room">
+                <i class="fa fa-heart favorite"></i>
+                <div class="room-info">
+                    <h3>Study Room</h3>
+                    <p>The study room is designed to provide a comfortable and focused...</p>
+                    <div class="status occupied">Occupied</div>
+                    <div class="rating">★★★★★</div>
+                </div>
+            </div>
+            <div class="room-card">
+                <img src="Images/image3.jpg" alt="Study Room">
+                <i class="fa fa-heart favorite"></i>
+                <div class="room-info">
+                    <h3>Study Room</h3>
+                    <p>The study room is designed to provide a comfortable and focused...</p>
+                    <div class="status available">Available</div>
+                    <div class="rating">★★★★☆</div>
+                </div>
+            </div>
+            <div class="room-card">
+                <img src="Images/image2.jpg" alt="Meeting Room">
+                <i class="fa fa-heart favorite"></i>
+                <div class="room-info">
+                    <h3>Meeting Room</h3>
+                    <p>The meeting room is a modern and stylish space, designed with...</p>
+                    <div class="status available">Available</div>
+                    <div class="rating">★★★★★</div>
+                </div>
+            </div>
+        </div>
+        <div class="pagination">
+            <button>&lt;</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>4</button>
+            <button>5</button>
+            <button>...</button>
+            <button>10</button>
+            <button>&gt;</button>
+        </div>
+    </main>
+
+    <div class="sidebar">
+        <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+        <h3>Kate Russell</h3>
+        <p>Uni Student</p>
+
+        <h4>My profile</h4>
+        <a href="#"><i class="fas fa-user icon"></i>Personal Details</a>
+        <a href="#"><i class="fas fa-key icon"></i>Change password</a>
+
+        <h4>My library</h4>
+        <a href="#"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+        <a href="#"><i class="fas fa-book icon"></i>Borrow books</a>
+        <a href="#"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+        <a href="#"><i class="fas fa-heart icon"></i>Favorites</a>
+        <a href="#"><i class="fas fa-history icon"></i>My previous orders</a>
+
+        <h4>Others</h4>
+        <a href="#"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+        <a href="#"><i class="fas fa-truck icon"></i>Track order</a>
+        <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+
+        <div class="signout">
+            <a href="#"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+        </div>
+    </div>
+
+    <script>
+        // Get the button and sidebar elements
+        var toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+        var sidebar = document.querySelector('.sidebar');
+
+        // Add an event listener to the button to toggle the sidebar
+        toggleSidebarBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('open');
+            if (sidebar.style.display === 'none') {
+                sidebar.style.display = 'block';
+            } else {
+                sidebar.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

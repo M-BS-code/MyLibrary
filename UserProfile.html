@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFF4DC;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo img {
+            height: 50px;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            margin-left: 100px;        
+            margin-right: 90px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .search-bar button {
+            padding: 8px;
+            background-color: #AD512E;
+            border: 1px solid #AD512E;
+            border-radius: 0 4px 4px 0;
+            color: #fff;
+            cursor: pointer;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: -60px;
+            margin-right: 40px;
+        }
+        
+        .header-right button {
+            margin-left: 20px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #AD512E;
+        }
+        
+        .profile-container {
+            max-width: 1000px;
+            margin: 100px auto 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        
+        .user-info {
+            flex-grow: 1;
+        }
+        
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .profile-actions button {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .upload-btn {
+            background-color: #1e90ff;
+            color: #fff;
+        }
+        
+        .delete-btn {
+            background-color: #ccc;
+            color: #333;
+        }
+        
+        .profile-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #444;
+        }
+        
+        .form-group input {
+            width: 90%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-group.full-width input {
+            width: calc(100% - 24px);
+        }
+        
+        .divider {
+            grid-column: span 2;
+            height: 1px;
+            background-color: #ccc;
+            margin: 20px 0;
+        }
+        
+        .library-card-section {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center; 
+            background-color: #f7f3e9;
+            padding: 20px;
+            border-radius: 8px;
+            grid-column: span 2; /* Span across two columns */
+        }
+        
+        .library-card {
+            width: 250px;
+            height: auto;
+            margin-right: 20px;
+        }
+        
+        .card-details {
+            flex-grow: 1;
+        }
+        
+        .card-details h3 {
+            margin: 0 0 10px 0;
+        }
+        
+        .card-status p {
+            margin: 5px 0;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-status p i {
+            margin-right: 10px;
+            color: #AD512E;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            width: 100%;
+            grid-column: span 2; /* Span across two columns */
+        }
+        
+        .cancel-btn {
+            background-color: #ccc;
+            color: #333;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .save-btn {
+            background-color: #1e90ff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .sidebar {
+            display: none; /* Hide the sidebar initially */
+            width: 250px;
+            max-height: calc(100vh - 60px); /* Adjust the height as per your header */
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 60px; /* Adjust the top position as per your header */
+            right: 0; /* Sidebar will appear from the right */
+            transition: right 0.3s;
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+        
+        .sidebar .avatar {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .sidebar h3 {
+            margin: 10px 0 5px 0;
+            font-size: 1.2em;
+        }
+        
+        .sidebar p {
+            margin: 0 0 20px 0;
+            color: gray;
+        }
+        
+        .sidebar a {
+            text-decoration: none;
+            color: black;
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .sidebar a .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        
+        .sidebar a:last-child {
+            border-bottom: none;
+        }
+        
+        .sidebar .signout {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .sidebar .signout a {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            color: black;
+        }
+
+        .email-field input {
+            width: 195%; /* Adjust as needed */
+        }
+        
+        .confirm-password-field input {
+            width: 195%; /* Adjust as needed */
+        }
+
+        .library-card {
+            width: 500px; /* Increase the width as needed */
+            height: auto;
+            margin-right: 100px;
+            border-radius: 20px;
+        }
+
+
+        .form-group {
+             margin-top: 50px;
+          }
+          
+          .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #444;
+          }
+          
+          .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+          }
+          
+          .form-group select:focus {
+            border-color: #aaa;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          }
+          
+          .form-group select option {
+            padding: 10px;
+          }
+          
+          .form-group select option:hover {
+            background-color: #f0f0f0;
+          }
+          
+          .form-group select option:selected {
+            background-color: #ccc;
+            color: #444;
+          }
+
+    
+           /* Responsive adjustments */
+    @media screen and (max-width: 768px) {
+        /* Example breakpoint for small devices */
+        
+ 
+
+        /* Adjust search bar margins for smaller screens */
+        .search-bar {
+            margin-left: 20px;
+            margin-right: 40px;
+        }
+        .library-card {
+            width: 250px; /* Adjust width as needed */
+            margin-right: 20px; /* Restore right margin */
+        }
+    }
+
+        /* Show the sidebar */
+        .sidebar {
+            display: block;
+        }
+    
+
+    /* Ensure sidebar remains hidden by default on larger screens */
+    @media screen and (min-width: 769px) {
+        .sidebar {
+            display: none;
+        }
+    }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="homepage.html" class="logo">
+                <img src="images/logo.png" alt="Logo">
+            </a>
+            <div class="search-bar">
+                <input type="text" placeholder="Search">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="header-right">
+                <button class="filter-btn"><i class="fas fa-filter"></i> Filter</button>
+                <button class="account-btn"><i class="fas fa-user"></i> Account</button>
+                <button id="toggleSidebarBtn" class="menu-btn"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="profile-container">
+            <h2>User Profile</h2>
+            <div class="profile-header">
+                <img src="images/user-avatar.png" alt="User Avatar" class="avatar" id="profileAvatar">
+                <div class="user-info">
+                    <h3>Maryam</h3>
+                    <p>Student</p>
+                    <p>British University In Dubai</p>
+                </div>
+                <div class="profile-actions">
+                    <input type="file" id="uploadPhotoInput" style="display: none;" accept="image/*">
+                    <button class="upload-btn" id="uploadPhotoBtn">Upload New Photo</button>
+                    <button class="delete-btn" id="deletePhotoBtn">Delete</button>
+                </div>
+            </div>
+            <form class="profile-form">
+                <div class="form-group">
+                    <label for="first-name">First Name</label>
+                    <input type="text" id="first-name" placeholder="eg. Alaa">
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Last Name</label>
+                    <input type="text" id="last-name" placeholder="eg. Mohamed">
+                </div>
+                <div class="form-group email-field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="eg. gfgfg@gmail.com">
+                </div>
+                <div class="divider"></div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                     </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" placeholder="Phone Number">
+                </div>
+                <div class="library-card-section">
+                    <img src="images/library-card.png" alt="Library Card" class="library-card" id="libraryCard">
+                    <div class="card-details">
+                        <h3>Library Card Details</h3>
+                        <div class="card-status">
+                            <p id="cardStatus"><i class="fas fa-bell"></i> <span id="statusText">Active</span></p>
+                            <p><span id="reportLostCardBtn"><i class="fas fa-exclamation-circle"></i> Report Lost Card</span></p>
+                            <p><span id="downloadCardBtn"><i class="fas fa-download"></i> Download Card</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="divider"></div>
+
+
+                <div class="form-group">
+                    <label for="nationality">Nationality</label>
+                    <select id="nationality">
+                        <option value="">Select Nationality</option>
+                        <option value="American">American</option>
+                        <option value="British">British</option>
+                        <option value="Canadian">Canadian</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="French">French</option>
+                        <option value="German">German</option>
+                        <option value="arab">Arab</option>
+
+                     </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="dob">Date Of Birth</label>
+                    <input type="date" id="dob">
+                </div>
+                <div class="divider" id="change-password-section"></div>
+                <div class="form-group">
+                    <label for="current-password">Current Password</label>
+                    <input type="password" id="current-password" placeholder="Current Password">
+                </div>
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" placeholder="New Password">
+                </div>
+                <div class="form-group confirm-password-field">
+                    <label for="confirm-password">Confirm New Password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm New Password">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="sidebar">
+            <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+            <h3>Kate Russell</h3>
+            <p>Uni Student</p>
+
+            <h4>My profile</h4>
+            <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+            <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+
+            <h4>My library</h4>
+            <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+            <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+            <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+            <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+            <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+
+            <h4>Others</h4>
+            <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+            <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+            <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+
+            <div class="signout">
+                <a href="Login.html"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+
+        
+        // Toggle sidebar visibility
+        var toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+        var sidebar = document.querySelector('.sidebar');
+        toggleSidebarBtn.addEventListener('click', function() {
+            sidebar.style.display = (sidebar.style.display === 'none' || sidebar.style.display === '') ? 'block' : 'none';
+        });
+
+        // Profile photo upload and delete functionality
+        const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
+        const deletePhotoBtn = document.getElementById('deletePhotoBtn');
+        const uploadPhotoInput = document.getElementById('uploadPhotoInput');
+        const profileAvatar = document.getElementById('profileAvatar');
+
+        uploadPhotoBtn.addEventListener('click', () => {
+            uploadPhotoInput.click();
+        });
+
+        uploadPhotoInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileAvatar.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        deletePhotoBtn.addEventListener('click', () => {
+            profileAvatar.src = 'images/user-avatar.png'; // Default avatar image
+        });
+
+        // Library card functionalities
+        const reportLostCardBtn = document.getElementById('reportLostCardBtn');
+        const downloadCardBtn = document.getElementById('downloadCardBtn');
+        const cardStatus = document.getElementById('cardStatus');
+        const statusText = document.getElementById('statusText');
+
+        reportLostCardBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            alert("The library has been notified about the lost card.");
+            cardStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Reported Lost';
+            reportLostCardBtn.style.pointerEvents = 'none'; // Disable further clicks
+        });
+
+        downloadCardBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const libraryCard = document.getElementById('libraryCard');
+            const link = document.createElement('a');
+            link.href = libraryCard.src;
+            link.download = 'LibraryCard.png';
+            link.click();
+        });
+
+        cardStatus.addEventListener('click', () => {
+            if (statusText.textContent === 'Active') {
+                statusText.textContent = 'Inactive';
+                cardStatus.innerHTML = '<i class="fas fa-bell-slash"></i> Inactive';
+            } else {
+                statusText.textContent = 'Active';
+                cardStatus.innerHTML = '<i class="fas fa-bell"></i> Active';
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const sidebar = document.querySelector('.sidebar');
+    
+            function renderSidebar(role) {
+                if (role === 'student') {
+                    sidebar.innerHTML = `
+                        <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                        <h3>Kate Russell</h3>
+                        <p>Uni Student</p>
+    
+                        <h4>My profile</h4>
+                        <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                        <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+    
+                        <h4>My library</h4>
+                        <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                        <a href="BorrowForUni.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                        <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                        <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                        <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+    
+                        <h4>Others</h4>
+                        <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                        <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                        <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+    
+                        <div class="signout">
+                            <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                        </div>
+                    `;
+                } else if (role === 'nonstudent') {
+                    sidebar.innerHTML = `
+                        <img src="images/user-avatar.png" alt="Avatar" class="avatar">
+                        <h3>Kate Russell</h3>
+                        <p>Non-student</p>
+    
+                        <h4>My profile</h4>
+                        <a href="userprofile.html"><i class="fas fa-user icon"></i>Personal Details</a>
+                        <a href="UserProfile.html#change-password-section"><i class="fas fa-key icon"></i>Change password</a>
+    
+                        <h4>My library</h4>
+                        <a href="Mycart.html"><i class="fas fa-shopping-cart icon"></i>My cart</a>
+                        <a href="BorrowingForNon.html"><i class="fas fa-book icon"></i>Borrow books</a>
+                        <a href="CurrentBorrowedItems.html"><i class="fas fa-book-reader icon"></i>Current Borrowed items</a>
+                        <a href="Favorites.html"><i class="fas fa-heart icon"></i>Favorites</a>
+                        <a href="OrderHistory.html"><i class="fas fa-history icon"></i>My previous orders</a>
+    
+                        <h4>Others</h4>
+                        <a href="MeetingSchedules.html"><i class="fas fa-calendar-alt icon"></i>Meeting schedules</a>
+                        <a href="trackOrder.html"><i class="fas fa-truck icon"></i>Track order</a>
+                        <a href="#"><i class="fas fa-headset icon"></i>Contact & Support</a>
+    
+                        <div class="signout">
+                            <a href="Login.html" onclick="logout()"><i class="fas fa-sign-out-alt icon"></i>Sign out</a>
+                        </div>
+                    `;
+                } else {
+                    sidebar.innerHTML = `
+                        <h3>Welcome to the Library</h3>
+                        <p>Please <a href="Signup.html">sign up</a> or <a href="Login.html">log in</a>.</p>
+                    `;
+                }
+            }
+    
+            if (user) {
+                renderSidebar(user.role);
+            }
+        });
+    
+        function logout() {
+            localStorage.removeItem('user');
+        }
+
+        const nationality = document.getElementById('nationality').value;
+const gender = document.getElementById('gender').value;
+
+
+    </script>
+    
+</body>
+</html>
